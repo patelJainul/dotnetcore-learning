@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "watch RoutingAssignmentCountries",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/RoutingAssignment/RoutingAssignmentCountries/RoutingAssignmentCountries.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch RoutingAssignmentCountries",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    }
+  ]
+}
