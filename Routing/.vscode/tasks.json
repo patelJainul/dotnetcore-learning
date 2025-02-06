@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    },
+    {
+      "type": "dotnet",
+      "task": "clean",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: clean"
+    },
+    {
+      "type": "dotnet",
+      "task": "watch RoutingExamples",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/Routing/RoutingExamples/RoutingExamples.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch RoutingExamples",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
