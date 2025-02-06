@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "watch MiddlewaresExample",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/MiddlewaresExample/MiddlewaresExample.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch MiddlewaresExample",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    },
+    {
+      "type": "dotnet",
+      "task": "clean",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: clean"
+    }
+  ]
+}
