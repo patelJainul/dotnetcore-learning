@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    },
+    {
+      "type": "dotnet",
+      "task": "watch ModelsAssignmetEcommerce",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/ModelsAssignment/ModelsAssignmetEcommerce/ModelsAssignmetEcommerce.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch ModelsAssignmetEcommerce",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
