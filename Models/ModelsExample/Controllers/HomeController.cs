@@ -1,13 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
+using ModelsExample.Models;
 
 namespace ModelsExample.Controllers
 {
     public class HomeController : Controller
     {
         // GET: HomeController
-        public IActionResult Index()
+        public IActionResult Index(Person person)
         {
-            return Content("Hello from HomeController");
+            if (!ModelState.IsValid)
+            {
+                List<string> errors = [.. ModelState.Values.SelectMany(value => value.Errors.Select(error => error.ErrorMessage))];
+
+                return BadRequest(errors);
+            }
+            return Json(person);
         }
 
     }

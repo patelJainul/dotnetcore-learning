@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "watch ModelsExample",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/Models/ModelsExample/ModelsExample.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch ModelsExample",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    }
+  ]
+}
