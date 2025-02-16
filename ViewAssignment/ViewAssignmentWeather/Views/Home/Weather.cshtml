@@ -1,35 +1,24 @@
 ﻿@using ViewAssignmentWeather.Models;
 @model CityWeather;
 
-<!DOCTYPE html>
-<html lang="en">
+@{
+    ViewBag.title = "Weather Details";
+}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/@@tailwindcss/browser@4"></script>
-    <title>Weather Details</title>
-</head>
-
-<body class="p-2">
-    <h1 class="text-3xl font-bold">Weather</h1>
-    <div class="flex flex-col items-center h-screen justify-center gap-4">
-        <div class="border border-zinc-500 grid grid-cols-3 items-start p-4 rounded-sm">
-            <div class="w-[80px]">
-                <div class="font-semibold text-lg">@Model.CityName</div>
-                <div class="text-zinc-700 text-sm">@Model.DateAndTime.ToShortTimeString()</div>
-                @* <a href="/weather/@Model.CityUniqueCode" class="text-xs text-blue-600 mt-2">Details</a> *@
-            </div>
-            <div class="border-r-[1px] border-r-zinc-500 h-full mx-5"></div>
-            <div class="font-semibold mt-3">
-                <span class="">@Model.TempretureFahrenheit</span>
-                <span class="text-zinc-500">
-                    <sup>o</sup>F
-                </span>
-            </div>
+<div class="flex flex-col items-center flex-1 justify-center gap-4 overflow-auto">
+    <div class="border border-zinc-500 grid grid-cols-3 items-start p-4 rounded-sm shadow-lg">
+        <div class="w-[80px]">
+            <div class="font-semibold text-lg">@Model.CityName</div>
+            <div class="text-zinc-700 text-sm">@Model.DateAndTime.ToShortTimeString()</div>
+            @* <a href="/weather/@Model.CityUniqueCode" class="text-xs text-blue-600 mt-2">Details</a> *@
         </div>
-        <a href="/" class="text-xs text-blue-600 mt-2">Back To Home</a>
+        <div class="border-r-[1px] border-r-zinc-500 h-full mx-5"></div>
+        <div class="font-semibold mt-3">
+            <span class="">@Model.TempretureFahrenheit</span>
+            <span class="text-zinc-500">
+                <sup>o</sup>F
+            </span>
+        </div>
     </div>
-</body>
-
-</html>
+    <a href="/" class="text-xs text-blue-600 mt-2">Back To Home</a>
+</div>
