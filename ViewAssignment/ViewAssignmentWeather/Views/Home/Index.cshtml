@@ -1,5 +1,4 @@
-﻿@using ViewAssignmentWeather.Models;
-@model List<CityWeather>;
+﻿@model List<CityWeather>;
 @{
     ViewBag.title = "Weather Home";
 }
@@ -20,7 +19,9 @@
                 currentBgColor = ViewBag.bgcolor["red"];
                 break;
         }
-        <div class="@currentBgColor grid grid-cols-3 items-start p-4 rounded-sm shadow-lg">
+        ViewBag.currentBgColor = currentBgColor;
+
+        @* <div class="@currentBgColor grid grid-cols-3 items-start p-4 rounded-sm shadow-lg">
             <div class="w-[80px]">
                 <div class="font-semibold text-lg">@item.CityName</div>
                 <div class="text-zinc-700 text-sm">@item.DateAndTime.ToShortTimeString()</div>
@@ -33,6 +34,15 @@
                     <sup>o</sup>F
                 </span>
             </div>
-        </div>
+        </div> *@
+
+        @* <partial model="item" name="_WeatherCard"></partial> *@
+
+        @* @await Html.PartialAsync("_WeatherCard", item) *@
+
+        await Html.RenderPartialAsync("_WeatherCard", item);
+
+
+
     }
 </div>
