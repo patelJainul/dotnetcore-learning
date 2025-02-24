@@ -40,7 +40,10 @@
 
         @* @await Html.PartialAsync("_WeatherCard", item) *@
 
-        await Html.RenderPartialAsync("_WeatherCard", item);
+        @* await Html.RenderPartialAsync("_WeatherCard", item); *@
+
+        @await Component.InvokeAsync("WeatherCard", item)
+
 
 
 

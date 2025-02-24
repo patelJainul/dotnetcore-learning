@@ -1,0 +1,15 @@
+﻿@model CityWeather;
+
+<div class="@ViewBag.currentBgColor grid grid-cols-3 items-start p-4 rounded-sm shadow-lg">
+    <div class="w-[80px]">
+        <div class="font-semibold text-lg">@Model.CityName</div>
+        <div class="text-zinc-700 text-sm">@Model.DateAndTime.ToShortTimeString()</div>
+        <a href="/weather/@Model.CityUniqueCode" class="text-xs text-blue-600 mt-2">Details</a>
+    </div>
+    <div class="border-r-[1px] border-r-white h-full mx-5"></div>
+    <div class="font-semibold mt-3">
+        <span class="">@Model.TempretureFahrenheit</span>
+        <span class="text-zinc-500">
+            <sup>o</sup>F
+    </div>
+</div>
