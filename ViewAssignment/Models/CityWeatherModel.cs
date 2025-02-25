@@ -1,4 +1,4 @@
-namespace ViewAssignmentWeather.Models;
+﻿namespace Models;
 
 public class CityWeather
 {
@@ -9,3 +9,4 @@ public class CityWeather
     public int TempretureFahrenheit { get; set; }
 
 }
+

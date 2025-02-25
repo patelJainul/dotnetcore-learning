@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-using ViewAssignmentWeather.Models;
+using Models;
 
 namespace ViewAssignmentWeather.ViewComponents;
 

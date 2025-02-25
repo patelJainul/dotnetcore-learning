@@ -1,16 +1,20 @@
 using Microsoft.AspNetCore.Mvc;
 
-using ViewAssignmentWeather.Models;
+using Models;
+
+using ServiceContractors;
 
 namespace ViewAssignmentWeather.Controllers
 {
     public class HomeController : Controller
     {
-        readonly List<CityWeather> _cityWeathers = [
-            new CityWeather { CityUniqueCode = "LDN", CityName = "London", DateAndTime = DateTime.Now, TempretureFahrenheit = 33 },
-            new CityWeather { CityUniqueCode = "NYC", CityName = "New York", DateAndTime = DateTime.Now, TempretureFahrenheit = 60 },
-            new CityWeather { CityUniqueCode = "PAR", CityName = "Paris", DateAndTime = DateTime.Now, TempretureFahrenheit = 82 },
-        ];
+
+        private readonly ICitiesWeatherServices _citiesServices;
+
+        public HomeController(ICitiesWeatherServices citiesServices)
+        {
+            _citiesServices = citiesServices;
+        }
 
         readonly Dictionary<string, string> _bgcolor = new Dictionary<string, string> {
             { "blue", "bg-blue-300" },
@@ -23,18 +27,17 @@ namespace ViewAssignmentWeather.Controllers
         [Route("weather")]
         public ActionResult Index()
         {
+            var cityWeathers = _citiesServices.GetCityWeathers();
             ViewBag.bgcolor = _bgcolor;
-            return View(_cityWeathers);
+            return View(cityWeathers);
         }
 
         [Route("weather/{id}")]
         public ActionResult Weather(string id)
         {
-            ViewBag.bgcolor = _bgcolor;
-            var selectedCity = _cityWeathers.FirstOrDefault(c => c.CityUniqueCode == id);
-            return selectedCity == null ? NotFound() : View(selectedCity);
+            var cityWeather = _citiesServices.GetCityWeathersById(id);
+            return cityWeather == null ? NotFound() : View(cityWeather);
         }
-
 
     }
 }
