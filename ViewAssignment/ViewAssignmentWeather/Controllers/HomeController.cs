@@ -1,14 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-
 using Models;
-
 using ServiceContractors;
 
 namespace ViewAssignmentWeather.Controllers
 {
     public class HomeController : Controller
     {
-
         private readonly ICitiesWeatherServices _citiesServices;
 
         public HomeController(ICitiesWeatherServices citiesServices)
@@ -16,10 +13,11 @@ namespace ViewAssignmentWeather.Controllers
             _citiesServices = citiesServices;
         }
 
-        readonly Dictionary<string, string> _bgcolor = new Dictionary<string, string> {
+        readonly Dictionary<string, string> _bgcolor = new Dictionary<string, string>
+        {
             { "blue", "bg-blue-300" },
             { "green", "bg-[#d7ff79]" },
-            { "red", "bg-[#f5c448]" }
+            { "red", "bg-[#f5c448]" },
         };
 
         // GET: HomeController
@@ -38,6 +36,5 @@ namespace ViewAssignmentWeather.Controllers
             var cityWeather = _citiesServices.GetCityWeathersById(id);
             return cityWeather == null ? NotFound() : View(cityWeather);
         }
-
     }
 }

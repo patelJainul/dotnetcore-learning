@@ -1,5 +1,4 @@
 ﻿using Models;
-
 using ServiceContractors;
 
 namespace Services;
@@ -12,27 +11,29 @@ public class CitiesWeatherServices : ICitiesWeatherServices
     {
         _cityWeathers =
         [
-            new CityWeather {
+            new CityWeather
+            {
                 CityUniqueCode = "LDN",
                 CityName = "London",
                 DateAndTime = DateTime.Now,
-                TempretureFahrenheit = 33
+                TempretureFahrenheit = 33,
             },
-            new CityWeather {
+            new CityWeather
+            {
                 CityUniqueCode = "NYC",
                 CityName = "New York",
                 DateAndTime = DateTime.Now,
-                TempretureFahrenheit = 60
+                TempretureFahrenheit = 60,
             },
-            new CityWeather {
+            new CityWeather
+            {
                 CityUniqueCode = "PAR",
                 CityName = "Paris",
                 DateAndTime = DateTime.Now,
-                TempretureFahrenheit = 82
+                TempretureFahrenheit = 82,
             },
         ];
     }
-
 
     public List<CityWeather> GetCityWeathers()
     {
@@ -43,6 +44,4 @@ public class CitiesWeatherServices : ICitiesWeatherServices
     {
         return _cityWeathers.FirstOrDefault(c => c.CityUniqueCode == CityUniqueCode);
     }
-
-
 }

@@ -1,5 +1,4 @@
 using ServiceContractors;
-
 using Services;
 
 var builder = WebApplication.CreateBuilder(args);
