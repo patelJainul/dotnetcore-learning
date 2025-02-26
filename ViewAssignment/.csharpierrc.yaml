@@ -1,6 +1,6 @@
 printWidth: 100 # Specify at what point the printer will wrap content
 useTabs: false # Indent lines with tabs instead of spaces.
-tabWidth: 4 #Specify the number of spaces used per indentation level
+tabWidth: 2 #Specify the number of spaces used per indentation level
 preprocessorSymbolSets: # Preprocessor Symbol Sets like #if FIRST #elif SECOND
   - ""
   - "DEBUG"
