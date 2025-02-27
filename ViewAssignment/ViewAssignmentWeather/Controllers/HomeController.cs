@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using Models;
 using ServiceContractors;
 
 namespace ViewAssignmentWeather.Controllers
@@ -20,7 +19,6 @@ namespace ViewAssignmentWeather.Controllers
       { "red", "bg-[#f5c448]" },
     };
 
-    // GET: HomeController
     [Route("/")]
     [Route("weather")]
     public ActionResult Index()
