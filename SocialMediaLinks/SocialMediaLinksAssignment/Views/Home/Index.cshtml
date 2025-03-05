@@ -1,0 +1,12 @@
+﻿@model SocialLink[];
+@{
+    ViewBag.title = "Home";
+}
+
+<h1 class="text-3xl font-bold">
+    @foreach (SocialLink link in Model)
+    {
+        @await Component.InvokeAsync("LinkBox", link)
+    }
+
+</h1>

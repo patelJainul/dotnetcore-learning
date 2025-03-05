@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialMediaLinksAssignment", "SocialMediaLinksAssignment\SocialMediaLinksAssignment.csproj", "{3A0579A8-6B82-48AD-A3A7-68958734F2C2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{1DC665F1-3931-40CB-ACBD-95AC0E5105BF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{3A0579A8-6B82-48AD-A3A7-68958734F2C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A0579A8-6B82-48AD-A3A7-68958734F2C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A0579A8-6B82-48AD-A3A7-68958734F2C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DC665F1-3931-40CB-ACBD-95AC0E5105BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DC665F1-3931-40CB-ACBD-95AC0E5105BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DC665F1-3931-40CB-ACBD-95AC0E5105BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DC665F1-3931-40CB-ACBD-95AC0E5105BF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

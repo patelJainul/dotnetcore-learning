@@ -1,0 +1,24 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="content-language" content="en">
+    <meta charset="UTF-8">
+    <meta name="description" content="@(ViewBag.description ?? "Default description")" />
+
+    <meta name="page-topic" content="Media">
+    <meta name="page-type" content="Blogging">
+    <meta name="audience" content="Everyone">
+    <meta name="robots" content="index, follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/@@tailwindcss/browser@4"></script>
+    <title>@ViewBag.title</title>
+</head>
+
+<body>
+    <div class="container mx-auto mt-10">
+        @RenderBody()
+    </div>
+</body>
+
+</html>
