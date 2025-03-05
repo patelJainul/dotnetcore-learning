@@ -1,0 +1,30 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    },
+    {
+      "type": "dotnet",
+      "task": "watch SocialMediaLinksAssignment",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/SocialMediaLinks/SocialMediaLinksAssignment/SocialMediaLinksAssignment.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch SocialMediaLinksAssignment",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "type": "dotnet",
+      "task": "clean",
+      "group": "clean",
+      "problemMatcher": [],
+      "label": "dotnet: clean"
+    }
+  ]
+}
