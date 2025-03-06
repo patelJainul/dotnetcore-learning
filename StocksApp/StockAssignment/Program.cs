@@ -6,6 +6,7 @@ using Services;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection("ApiSettings"));
+builder.Services.Configure<TradingOptions>(builder.Configuration.GetSection("TradingOptions"));
 
 // builder.Services.AddHttpClient<IFinnHubServices, FinnHubServices>(
 //   "finnhub",

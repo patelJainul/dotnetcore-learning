@@ -1,8 +1,7 @@
 namespace Models;
 
-public class Stock
+public class StockPriceQuote
 {
-  public string StockSymbol { get; set; } = string.Empty;
   public float CurrentPrice { get; set; }
   public float Change { get; set; }
   public float PercentChange { get; set; }

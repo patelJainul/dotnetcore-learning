@@ -4,5 +4,6 @@ namespace ServiceContractors;
 
 public interface IFinnHubServices
 {
-  public Task<Stock?> GetStockQuote(string symbol);
+  Task<StockPriceQuote?> GetStockPriceQuote(string symbol);
+  Task<CompanyProfile?> GetCompanyProfile(string stockSymbol);
 }
