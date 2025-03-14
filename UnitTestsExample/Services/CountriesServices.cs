@@ -25,4 +25,16 @@ public class CountriesServices : ICountriesServices
 
         return country.ToCountryResponse();
     }
+
+    public List<CountryResponse> GetCountries()
+    {
+        List<CountryResponse> countries = [.. _countries.Select(c => c.ToCountryResponse())];
+        return countries;
+    }
+
+    public CountryResponse? GetCountry(Guid? countryId)
+    {
+        Country? country = _countries.Find(c => c.CountryId == countryId);
+        return country?.ToCountryResponse();
+    }
 }

@@ -4,10 +4,10 @@ namespace ServiceContracts.DTO;
 
 public class CountryAddRequest
 {
-    public required string CountryName { get; set; }
+    public string? CountryName { get; set; }
 
     public Country ToCountry()
     {
-        return new Country { CountryName = CountryName };
+        return new Country { CountryName = CountryName ?? string.Empty };
     }
 }
