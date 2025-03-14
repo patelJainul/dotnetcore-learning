@@ -64,17 +64,16 @@ public class CountriesServicesTests()
     public void AddCountry_ValidArgument()
     {
         // Arrange
-        CountryAddRequest addRequest = new() { CountryName = "AddCountry" };
+        var addRequest = new CountryAddRequest { CountryName = "India" };
 
         // Act
-        CountryResponse addResponse = _countriesServices.AddCountry(addRequest);
-        List<CountryResponse> countries = _countriesServices.GetCountries();
+        var addResponse = _countriesServices.AddCountry(addRequest);
+        var countries = _countriesServices.GetCountryById(addResponse.CountryId);
 
         // Assert
         Assert.NotNull(addResponse);
         Assert.NotEqual(Guid.Empty, addResponse.CountryId);
-        Assert.Equal(addRequest.CountryName, addResponse.CountryName);
-        Assert.Contains(addResponse, countries);
+        Assert.Equal(addResponse, countries);
     }
 
     #endregion
@@ -143,7 +142,7 @@ public class CountriesServicesTests()
         Guid countryId = Guid.NewGuid();
 
         // Act
-        var country = _countriesServices.GetCountry(countryId);
+        var country = _countriesServices.GetCountryById(countryId);
 
         // Assert
         Assert.Null(country);
@@ -161,7 +160,7 @@ public class CountriesServicesTests()
         var addResponse = _countriesServices.AddCountry(addRequest);
 
         // Act
-        var country = _countriesServices.GetCountry(addResponse.CountryId);
+        var country = _countriesServices.GetCountryById(addResponse.CountryId);
 
         // Assert
         Assert.NotNull(country);

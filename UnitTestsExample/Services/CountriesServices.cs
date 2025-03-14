@@ -28,13 +28,11 @@ public class CountriesServices : ICountriesServices
 
     public List<CountryResponse> GetCountries()
     {
-        List<CountryResponse> countries = [.. _countries.Select(c => c.ToCountryResponse())];
-        return countries;
+        return [.. _countries.Select(c => c.ToCountryResponse())];
     }
 
-    public CountryResponse? GetCountry(Guid? countryId)
+    public CountryResponse? GetCountryById(Guid? countryId)
     {
-        Country? country = _countries.Find(c => c.CountryId == countryId);
-        return country?.ToCountryResponse();
+        return _countries.FirstOrDefault(c => c.CountryId == countryId)?.ToCountryResponse();
     }
 }

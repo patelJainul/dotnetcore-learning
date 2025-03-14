@@ -34,5 +34,5 @@ public interface ICountriesServices
     /// <returns>
     /// The method `GetCountry` returns a `CountryResponse` object.
     /// </returns>
-    public CountryResponse? GetCountry(Guid? countryId);
+    public CountryResponse? GetCountryById(Guid? countryId);
 }
