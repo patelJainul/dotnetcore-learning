@@ -11,6 +11,7 @@ public class CountriesServices : ICountriesServices
     public CountryResponse AddCountry(CountryAddRequest? request)
     {
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(request.CountryName, "Request or CountryName is null.");
 
         bool isExist = _countries.Find(c => c.CountryName == request.CountryName) != null;
         if (isExist)

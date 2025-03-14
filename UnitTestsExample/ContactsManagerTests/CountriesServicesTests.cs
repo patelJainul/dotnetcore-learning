@@ -39,6 +39,20 @@ public class CountriesServicesTests()
     }
 
     /// <summary>
+    /// The function tests adding a country with a null country name and expects an ArgumentException to be
+    /// thrown.
+    /// </summary>
+    [Fact]
+    public void AddCountry_NullCountryName()
+    {
+        // Arrange
+        var request = new CountryAddRequest { CountryName = null };
+
+        // Assert
+        Assert.Throws<ArgumentNullException>(() => _countriesServices.AddCountry(request));
+    }
+
+    /// <summary>
     /// The AddCountry_ValidArgument test method verifies that a country can be successfully added with
     /// valid input.
     /// </summary>
