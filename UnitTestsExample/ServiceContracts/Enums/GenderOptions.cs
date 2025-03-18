@@ -6,3 +6,9 @@ public enum GenderOptions
     Female,
     Other,
 }
+
+public enum SortOptions
+{
+    Ascending,
+    Descending,
+}

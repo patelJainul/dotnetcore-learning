@@ -1,4 +1,5 @@
 using ServiceContracts.DTO;
+using ServiceContracts.Enums;
 
 namespace ServiceContracts;
 
@@ -21,9 +22,39 @@ public interface IPersonsServices
     /// This function returns a list of PersonResponse objects.
     /// </summary>
     /// <returns>
-    /// The method `GetPersons` returns a list of `PersonResponse` objects.
+    /// The `GetPersons` method returns a list of `PersonResponse` objects. Each `PersonResponse` object likely
+    /// contains information about a person, such as their ID, name, age, address, etc.
     /// </returns>
     public List<PersonResponse> GetPersons();
+
+    /// <summary>
+    /// This C# function `GetPersons` returns a list of `PersonResponse` objects based on a specified
+    /// filter.
+    /// </summary>
+    /// <param name="filter">The `filter` parameter in the `GetPersons` method is used to specify the
+    /// criteria or condition based on which the list of persons will be filtered or retrieved. This
+    /// parameter allows you to pass in a string value that can be used to filter the list of persons based
+    /// on certain attributes or properties.</param>
+    /// <returns>
+    /// The `GetPersons` method returns a list of `PersonResponse` objects based on the specified filter
+    /// criteria. If no filter is provided (i.e., the `filter` parameter is null or empty), the method
+    /// returns the entire list of persons. If a filter is provided, the method returns only those persons
+    /// that match the filter criteria.
+    /// </returns>
+    public List<PersonResponse> GetPersons(string filter);
+
+    /// <summary>
+    /// This C# function `GetPersons` returns a list of `PersonResponse` objects based on the specified
+    /// sorting options.
+    /// </summary>
+    /// <param name="SortOptions">SortOptions is an enum that represents different options for sorting the
+    /// list of persons. It could include options such as sorting by name, age, date of birth, etc.</param>
+    /// <returns>
+    /// The `GetPersons` method returns a list of `PersonResponse` objects based on the specified sorting
+    /// options. The method sorts the list of persons according to the specified criteria (e.g., ascending or
+    /// descending order) and returns the sorted list.
+    /// </returns>
+    public List<PersonResponse> GetPersons(SortOptions sort);
 
     /// <summary>
     /// This C# function retrieves a person's information by their unique identifier, returning a nullable
