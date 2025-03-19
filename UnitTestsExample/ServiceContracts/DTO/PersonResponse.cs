@@ -11,7 +11,7 @@ public class PersonResponse
     public DateTime? DateOfBirth { get; set; }
     public string? Gender { get; set; }
     public string? Address { get; set; }
-    public Guid? CountryId { get; set; }
+    public string? Country { get; set; }
     public bool ReceiveNewsLetters { get; set; }
 
     public double? Age
@@ -61,13 +61,18 @@ public class PersonResponse
             && Email == person.Email
             && DateOfBirth == person.DateOfBirth
             && Address == person.Address
-            && CountryId == person.CountryId
+            && Country == person.Country
             && ReceiveNewsLetters == person.ReceiveNewsLetters;
     }
 
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"Person ID: {PersonId}, First Name: {FirstName}, Last Name: {LastName}, Email: {Email}, Date of Birth: {DateOfBirth?.ToString("yyyy-MM-dd")}, Address: {Address}, Country: {Country}, Receive News Letters: {ReceiveNewsLetters}, Age: {Age}";
     }
 }
 
@@ -84,7 +89,6 @@ public static class PersonResponseExtensions
             DateOfBirth = person.DateOfBirth,
             Gender = person.Gender,
             Address = person.Address,
-            CountryId = person.CountryId,
             ReceiveNewsLetters = person.ReceiveNewsLetters,
         };
     }

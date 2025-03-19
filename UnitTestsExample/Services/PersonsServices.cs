@@ -2,45 +2,132 @@ using Entities;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
+using Services.Helper;
 
 namespace Services;
 
 public class PersonsServices : IPersonsServices
 {
     private readonly List<Person> _persons = [];
+    private readonly ICountriesServices _countriesServices = new CountriesServices();
+
+    private PersonResponse ConvertToPersonResponse(Person person)
+    {
+        PersonResponse personResponse = person.ToPersonResponse();
+        personResponse.Country = _countriesServices.GetCountryById(person.CountryId)?.CountryName;
+        return personResponse;
+    }
 
     public PersonResponse AddPerson(PersonAddRequest? request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
-        ArgumentNullException.ThrowIfNull(request.FirstName, nameof(request.FirstName));
-        ArgumentNullException.ThrowIfNull(request.LastName, nameof(request.LastName));
+        ValidationHelper.ModelValidation(request);
+
+        // if (request.CountryId != null)
+        // {
+        //     _ =
+        //         _countriesServices.GetCountryById(request.CountryId)
+        //         ?? throw new ArgumentException("Given country id doesn't exist");
+        // }
 
         Person person = request.ToPerson();
         person.PersonId = Guid.NewGuid();
         _persons.Add(person);
-        return person.ToPersonResponse();
+
+        return ConvertToPersonResponse(person);
     }
 
     public List<PersonResponse> GetPersons()
     {
-        return [.. _persons.Select(p => p.ToPersonResponse())];
+        return [.. _persons.Select(ConvertToPersonResponse)];
     }
 
-    public List<PersonResponse> GetPersons(string filter)
+    public List<PersonResponse> GetPersons(string? searchBy, string? searchString)
     {
+        if (string.IsNullOrEmpty(searchBy))
+        {
+            return [.. _persons.Select(ConvertToPersonResponse)];
+        }
+
+        if (string.IsNullOrEmpty(searchString))
+        {
+            return [.. _persons.Select(ConvertToPersonResponse)];
+        }
+
         return
         [
             .. _persons
-                .Select(p => p.ToPersonResponse())
+                .Select(ConvertToPersonResponse)
                 .Where(p =>
                 {
-                    if (string.IsNullOrEmpty(filter))
+                    if (searchBy == "FirstName")
                     {
-                        return true;
+                        return p.FirstName.Contains(
+                            searchString,
+                            StringComparison.CurrentCultureIgnoreCase
+                        );
                     }
 
-                    return p.FirstName.Contains(filter, StringComparison.CurrentCultureIgnoreCase)
-                        || p.LastName.Contains(filter, StringComparison.CurrentCultureIgnoreCase);
+                    if (searchBy == "LastName")
+                    {
+                        return p.LastName.Contains(
+                            searchString,
+                            StringComparison.CurrentCultureIgnoreCase
+                        );
+                    }
+
+                    if (searchBy == "Email")
+                    {
+                        return p.Email?.Contains(
+                                searchString,
+                                StringComparison.CurrentCultureIgnoreCase
+                            ) ?? false;
+                    }
+
+                    if (searchBy == "DateOfBirth")
+                    {
+                        return p.DateOfBirth?.ToString()
+                                .Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+                            ?? false;
+                    }
+
+                    if (searchBy == "Age")
+                    {
+                        return p.Age?.ToString()
+                                .Contains(searchString, StringComparison.CurrentCultureIgnoreCase)
+                            ?? false;
+                    }
+
+                    if (searchBy == "Gender")
+                    {
+                        return p.Gender?.Contains(
+                                searchString,
+                                StringComparison.CurrentCultureIgnoreCase
+                            ) ?? false;
+                    }
+
+                    if (searchBy == "Country")
+                    {
+                        return p.Country?.Contains(
+                                searchString,
+                                StringComparison.CurrentCultureIgnoreCase
+                            ) ?? false;
+                    }
+
+                    if (searchBy == "Address")
+                    {
+                        return p.Address?.Contains(
+                                searchString,
+                                StringComparison.CurrentCultureIgnoreCase
+                            ) ?? false;
+                    }
+
+                    if (searchBy == "ReceiveNewsLetters")
+                    {
+                        return p.ReceiveNewsLetters == (searchString == "true");
+                    }
+
+                    return true;
                 }),
         ];
     }
@@ -51,25 +138,40 @@ public class PersonsServices : IPersonsServices
         {
             SortOptions.Ascending =>
             [
-                .. _persons.OrderBy(p => p.FirstName).Select(p => p.ToPersonResponse()),
+                .. _persons.OrderBy(p => p.FirstName).Select(ConvertToPersonResponse),
             ],
             SortOptions.Descending =>
             [
-                .. _persons.OrderByDescending(p => p.FirstName).Select(p => p.ToPersonResponse()),
+                .. _persons.OrderByDescending(p => p.FirstName).Select(ConvertToPersonResponse),
             ],
-            _ => [.. _persons.Select(p => p.ToPersonResponse())],
+            _ => [.. _persons.Select(ConvertToPersonResponse)],
         };
     }
 
     public PersonResponse? GetPersonById(Guid? personId)
     {
-        return _persons.FirstOrDefault(p => p.PersonId == personId)?.ToPersonResponse();
+        ArgumentNullException.ThrowIfNull(personId, nameof(personId));
+
+        Person? person = _persons.FirstOrDefault(p => p.PersonId == personId);
+        if (person == null)
+        {
+            return null;
+        }
+
+        return ConvertToPersonResponse(person);
     }
 
     public PersonResponse UpdatePerson(PersonUpdateRequest? request)
     {
         ArgumentNullException.ThrowIfNull(request, nameof(request));
         ArgumentNullException.ThrowIfNull(request.PersonId, nameof(request.PersonId));
+
+        // if (request.CountryId != null)
+        // {
+        //     _ =
+        //         _countriesServices.GetCountryById(request.CountryId)
+        //         ?? throw new ArgumentException("Given country id doesn't exist");
+        // }
 
         Person? person =
             _persons.FirstOrDefault(p => p.PersonId == request.PersonId)
@@ -79,7 +181,7 @@ public class PersonsServices : IPersonsServices
 
         _persons.RemoveAll(p => p.PersonId == request.PersonId);
         _persons.Add(person);
-        return person.ToPersonResponse();
+        return ConvertToPersonResponse(person);
     }
 
     public PersonResponse DeletePerson(Guid? personId)
@@ -91,6 +193,6 @@ public class PersonsServices : IPersonsServices
             ?? throw new ArgumentException("Given person id doesn't exist");
 
         _persons.RemoveAll(p => p.PersonId == personId);
-        return person.ToPersonResponse();
+        return ConvertToPersonResponse(person);
     }
 }

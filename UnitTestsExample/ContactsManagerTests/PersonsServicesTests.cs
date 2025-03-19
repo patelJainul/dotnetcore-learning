@@ -2,12 +2,16 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services;
+using Xunit.Abstractions;
 
 namespace ContactsManagerTests;
 
-public class PersonsServicesTests
+public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
 {
+    private readonly ICountriesServices _countriesServices = new CountriesServices();
     private readonly IPersonsServices _personsServices = new PersonsServices();
+
+    private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
 
     #region AddPersonTestCases
 
@@ -35,7 +39,7 @@ public class PersonsServicesTests
         var request = new PersonAddRequest { FirstName = null };
 
         // Assert
-        Assert.Throws<ArgumentNullException>(() => _personsServices.AddPerson(request));
+        Assert.Throws<ArgumentException>(() => _personsServices.AddPerson(request));
     }
 
     /// <summary>
@@ -48,8 +52,31 @@ public class PersonsServicesTests
         var request = new PersonAddRequest { LastName = null };
 
         // Assert
-        Assert.Throws<ArgumentNullException>(() => _personsServices.AddPerson(request));
+        Assert.Throws<ArgumentException>(() => _personsServices.AddPerson(request));
     }
+
+    /// <summary>
+    /// The function `AddPerson_InvalidCountryId` tests adding a person with an invalid country ID.
+    /// </summary>
+    // [Fact]
+    // public void AddPerson_InvalidCountryId()
+    // {
+    //     // Arrange
+    //     var request = new PersonAddRequest
+    //     {
+    //         FirstName = "John",
+    //         LastName = "Doe",
+    //         Email = "johndoe@mail.com",
+    //         DateOfBirth = new DateTime(1990, 1, 1),
+    //         CountryId = Guid.NewGuid(),
+    //     };
+
+    //     // Act
+    //     void act() => _personsServices.AddPerson(request);
+
+    //     // Assert
+    //     Assert.Throws<ArgumentException>(act);
+    // }
 
     /// <summary>
     /// The `AddPerson_ValidRequest` function tests the successful addition of a person with valid input
@@ -59,6 +86,10 @@ public class PersonsServicesTests
     public void AddPerson_ValidRequest()
     {
         // Arrange
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
         var request = new PersonAddRequest
         {
             FirstName = "John",
@@ -68,6 +99,7 @@ public class PersonsServicesTests
             Address = "1234 Elm Street",
             Gender = GenderOptions.Male,
             ReceiveNewsLetters = true,
+            CountryId = country.CountryId,
         };
 
         // Act
@@ -107,6 +139,18 @@ public class PersonsServicesTests
     public void GetPersons_ReturnsListOfPersons()
     {
         // Arrange
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
+        var country2 = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "Canada" }
+        );
+
+        var country3 = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United Kingdom" }
+        );
+
         List<PersonAddRequest> requestList =
         [
             new PersonAddRequest
@@ -116,7 +160,7 @@ public class PersonsServicesTests
                 Email = "johndoe@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true,
             },
@@ -127,7 +171,7 @@ public class PersonsServicesTests
                 Email = "janedoe@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country2.CountryId,
                 Gender = GenderOptions.Female,
                 ReceiveNewsLetters = true,
             },
@@ -138,20 +182,32 @@ public class PersonsServicesTests
                 Email = "johnsmith@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country3.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = false,
             },
         ];
 
         List<PersonResponse> responseList = [];
+        requestList.ForEach(person =>
+        {
+            responseList.Add(_personsServices.AddPerson(person));
+        });
+
+        _testOutputHelper.WriteLine("Actual Persons:");
+        foreach (var person in responseList)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
 
         // Act
-        requestList.ForEach(r =>
-        {
-            responseList.Add(_personsServices.AddPerson(r));
-        });
         var persons = _personsServices.GetPersons();
+
+        _testOutputHelper.WriteLine("Expected Persons:");
+        foreach (var person in persons)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
 
         // Assert
         Assert.NotNull(persons);
@@ -187,6 +243,10 @@ public class PersonsServicesTests
     public void GetPersonById_PersonFound()
     {
         // Arrange
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
         var addRequest = new PersonAddRequest
         {
             FirstName = "John",
@@ -194,7 +254,7 @@ public class PersonsServicesTests
             Email = "johndoe@mail.com",
             DateOfBirth = new DateTime(1990, 1, 1),
             Address = "1234 Elm Street",
-            CountryId = Guid.NewGuid(),
+            CountryId = country.CountryId,
             Gender = GenderOptions.Male,
             ReceiveNewsLetters = true,
         };
@@ -224,7 +284,7 @@ public class PersonsServicesTests
         var filter = "John";
 
         // Act
-        var persons = _personsServices.GetPersons(filter);
+        var persons = _personsServices.GetPersons(searchBy: "FirstName", searchString: filter);
 
         // Assert
         Assert.NotNull(persons);
@@ -238,6 +298,18 @@ public class PersonsServicesTests
     [Fact]
     public void GetFilteredPersons_ReturnsListOfPersons()
     {
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
+        var country2 = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "Canada" }
+        );
+
+        var country3 = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United Kingdom" }
+        );
+
         List<PersonAddRequest> requestList =
         [
             new PersonAddRequest
@@ -247,7 +319,7 @@ public class PersonsServicesTests
                 Email = "johndoe@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true,
             },
@@ -258,7 +330,7 @@ public class PersonsServicesTests
                 Email = "janedoe@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country2.CountryId,
                 Gender = GenderOptions.Female,
                 ReceiveNewsLetters = true,
             },
@@ -269,7 +341,7 @@ public class PersonsServicesTests
                 Email = "johnsmith@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country3.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = false,
             },
@@ -282,8 +354,14 @@ public class PersonsServicesTests
         {
             responseList.Add(_personsServices.AddPerson(r));
         });
-        var filteredPersonsByFirstName = _personsServices.GetPersons("John");
-        var filteredPersonsByLastName = _personsServices.GetPersons("Smith");
+        var filteredPersonsByFirstName = _personsServices.GetPersons(
+            searchBy: "FirstName",
+            searchString: "John"
+        );
+        var filteredPersonsByLastName = _personsServices.GetPersons(
+            searchBy: "LastName",
+            searchString: "Smith"
+        );
 
         // Assert
         Assert.NotNull(filteredPersonsByFirstName);
@@ -317,7 +395,19 @@ public class PersonsServicesTests
     [Fact]
     public void GetSortedPersons_ReturnsListOfPersons()
     {
-        // Arrange}
+        // Arrange
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
+        var country2 = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "Canada" }
+        );
+
+        var country3 = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United Kingdom" }
+        );
+
         List<PersonAddRequest> requestList =
         [
             new PersonAddRequest
@@ -327,7 +417,7 @@ public class PersonsServicesTests
                 Email = "johndoe@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = true,
             },
@@ -338,7 +428,7 @@ public class PersonsServicesTests
                 Email = "janedoe@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country2.CountryId,
                 Gender = GenderOptions.Female,
                 ReceiveNewsLetters = true,
             },
@@ -349,7 +439,7 @@ public class PersonsServicesTests
                 Email = "johnsmith@mail.com",
                 DateOfBirth = new DateTime(1990, 1, 1),
                 Address = "1234 Elm Street",
-                CountryId = Guid.NewGuid(),
+                CountryId = country3.CountryId,
                 Gender = GenderOptions.Male,
                 ReceiveNewsLetters = false,
             },
@@ -397,6 +487,30 @@ public class PersonsServicesTests
     }
 
     /// <summary>
+    /// The function `UpdatePerson_InvalidCountryId` tests adding a person with an invalid country ID.
+    /// </summary>
+    // [Fact]
+    // public void UpdatePerson_InvalidCountryId()
+    // {
+    //     // Arrange
+    //     var addRequest = new PersonAddRequest
+    //     {
+    //         FirstName = "John",
+    //         LastName = "Doe",
+    //         Email = "johndoe@mail.com",
+    //         DateOfBirth = new DateTime(1990, 1, 1),
+    //         CountryId = Guid.NewGuid(),
+    //         Gender = GenderOptions.Male,
+    //         ReceiveNewsLetters = true,
+    //     };
+
+    //     void act() => _personsServices.AddPerson(addRequest);
+
+    //     // Assert
+    //     Assert.Throws<ArgumentException>(act);
+    // }
+
+    /// <summary>
     /// The function tests for the scenario where a person is updated with a valid request.
     /// </summary>
     [Fact]
@@ -410,12 +524,17 @@ public class PersonsServicesTests
             Email = "johndoe@mail.com",
             DateOfBirth = new DateTime(1990, 1, 1),
             Address = "1234 Elm Street",
-            CountryId = Guid.NewGuid(),
             Gender = GenderOptions.Male,
             ReceiveNewsLetters = true,
         };
 
         var person = _personsServices.AddPerson(addRequest);
+
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
+        addRequest.CountryId = country.CountryId;
 
         var updateRequest = new PersonUpdateRequest
         {
@@ -459,6 +578,10 @@ public class PersonsServicesTests
     public void DeletePerson_ValidRequest()
     {
         // Arrange
+        var country = _countriesServices.AddCountry(
+            new CountryAddRequest { CountryName = "United States" }
+        );
+
         var addRequest = new PersonAddRequest
         {
             FirstName = "John",
@@ -466,7 +589,7 @@ public class PersonsServicesTests
             Email = "johndoe@mail.com",
             DateOfBirth = new DateTime(1990, 1, 1),
             Address = "1234 Elm Street",
-            CountryId = Guid.NewGuid(),
+            CountryId = country.CountryId,
             Gender = GenderOptions.Male,
             ReceiveNewsLetters = true,
         };

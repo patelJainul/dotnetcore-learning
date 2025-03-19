@@ -41,7 +41,7 @@ public interface IPersonsServices
     /// returns the entire list of persons. If a filter is provided, the method returns only those persons
     /// that match the filter criteria.
     /// </returns>
-    public List<PersonResponse> GetPersons(string filter);
+    public List<PersonResponse> GetPersons(string? searchBy, string? searchString);
 
     /// <summary>
     /// This C# function `GetPersons` returns a list of `PersonResponse` objects based on the specified
