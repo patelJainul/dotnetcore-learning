@@ -6,7 +6,7 @@ namespace ContactsManagerTests;
 
 public class CountriesServicesTests()
 {
-    private readonly ICountriesServices _countriesServices = new CountriesServices();
+    private readonly ICountriesServices _countriesServices = new CountriesServices(isSeeded: false);
 
     #region AddCountryTestCases
 

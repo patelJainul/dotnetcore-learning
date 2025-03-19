@@ -1,0 +1,256 @@
+﻿@model IEnumerable<PersonResponse>
+@using ServiceContracts.Enums
+
+@{
+    // Helper function to create sort links
+    string GetSortLink(string columnName, string displayName)
+    {
+        var sortOrder = ViewBag.CurrentSortOrder;
+        string currentSortBy = ViewBag.CurrentSortBy;
+        string searchBy = ViewBag.CurrentSearchBy;
+        string searchString = ViewBag.CurrentSearchString;
+        
+        // Determine if this column is currently being sorted
+        bool isCurrentSortColumn = currentSortBy == columnName;
+        
+        // If already sorting by this column, toggle the sort order
+        var newSortOrder = (isCurrentSortColumn && sortOrder == SortOptions.Ascending) 
+            ? SortOptions.Descending 
+            : SortOptions.Ascending;
+        
+        // Create the link URL with all parameters
+        string url = $"/Persons/Index?sortBy={columnName}&sortOrder={newSortOrder}";
+        
+        // Add search parameters if they exist
+        if (!string.IsNullOrEmpty(searchBy) && !string.IsNullOrEmpty(searchString))
+        {
+            url += $"&searchBy={searchBy}&searchString={searchString}";
+        }
+        
+        // Determine the sort indicator icon
+        string sortIcon = "";
+        if (isCurrentSortColumn)
+        {
+            sortIcon = sortOrder.ToString() == SortOptions.Ascending.ToString() 
+                ? "<svg class='inline-block w-4 h-4 ml-1' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 15l7-7 7 7'></path></svg>"
+                : "<svg class='inline-block w-4 h-4 ml-1' fill='none' stroke='currentColor' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'></path></svg>";
+        }
+        
+        return $"<a href='{url}' class='flex items-center text-xs font-medium hover:text-blue-600 transition-colors duration-200'>{displayName}{sortIcon}</a>";
+    }
+}
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Persons List</h1>
+        <a href="/Persons/Create"
+            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition duration-200 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Add New Person
+        </a>
+    </div>
+
+    <!-- Enhanced Search Box -->
+    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl shadow-lg p-6 mb-8 border border-blue-100">
+        <h2 class="text-lg font-semibold text-gray-700 mb-4 flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            Search Persons
+        </h2>
+        <form id="searchForm" method="get" action="/Persons/Index" class="flex flex-col md:flex-row gap-6">
+            <div class="w-full md:w-1/3">
+                <label for="searchField" class="block text-sm font-medium text-gray-700 mb-2">Search By</label>
+                <div class="relative">
+                    <select id="searchField" name="searchBy"
+                        class="block w-full rounded-lg border border-gray-300 bg-white shadow-sm pl-4 pr-10 py-2.5 appearance-none focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-200 cursor-pointer hover:border-blue-400">
+                        @{
+                            var searchFields = new Dictionary<string, string>
+                            {
+                                { nameof(PersonResponse.FirstName), "First Name" },
+                                { nameof(PersonResponse.LastName), "Last Name" },
+                                { nameof(PersonResponse.Email), "Email" },
+                                { nameof(PersonResponse.DateOfBirth), "Date of Birth" },
+                                { nameof(PersonResponse.Age), "Age" },
+                                { nameof(PersonResponse.Gender), "Gender" },
+                                { nameof(PersonResponse.Country), "Country" },
+                                { nameof(PersonResponse.Address), "Address" }
+                            };
+                            
+                            ViewBag.SearchFields = searchFields;
+                            
+                            foreach (var field in ViewBag.SearchFields)
+                            {
+                                var isSelected = field.Key == ViewBag.CurrentSearchBy;
+                                if (isSelected)
+                                {
+                                    <option value="@field.Key" selected>@field.Value</option>
+                                }
+                                else
+                                {
+                                    <option value="@field.Key">@field.Value</option>
+                                }
+                            }
+                        }
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-500">
+                        <svg class="w-5 h-5 transition-transform duration-200" id="dropdownArrow" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full md:w-2/4">
+                <label for="searchText" class="block text-sm font-medium text-gray-700 mb-2">Search Text</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+                    <input type="text" id="searchText" name="searchString" value="@ViewBag.CurrentSearchString"
+                        class="pl-10 w-full rounded-lg border-gray-300 shadow-sm py-2.5 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50"
+                        placeholder="Enter search text...">
+                </div>
+            </div>
+            <div class="flex items-end gap-3 mt-auto">
+                <button type="submit"
+                    class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                    Search
+                </button>
+                <button type="button" id="clearButton"
+                    class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 flex items-center border border-gray-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5 text-gray-500" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    Clear
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 relative">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left">
+                            @Html.Raw(GetSortLink(nameof(PersonResponse.FirstName) + "," + nameof(PersonResponse.LastName), "Name"))
+                        </th>
+                        <th class="px-6 py-3 text-left">
+                            @Html.Raw(GetSortLink(nameof(PersonResponse.Email), "Email"))
+                        </th>
+                        <th class="px-6 py-3 text-left">
+                            @Html.Raw(GetSortLink(nameof(PersonResponse.DateOfBirth), "Date of Birth"))
+                        </th>
+                        <th class="px-6 py-3 text-left">
+                            @Html.Raw(GetSortLink(nameof(PersonResponse.Age), "Age"))
+                        </th>
+                        <th class="px-6 py-3 text-left">
+                            @Html.Raw(GetSortLink(nameof(PersonResponse.Gender), "Gender"))
+                        </th>
+                        <th class="px-6 py-3 text-left">
+                            @Html.Raw(GetSortLink(nameof(PersonResponse.Country), "Country"))
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:sticky md:right-0 md:bg-gray-50 md:z-10 backdrop-blur-sm bg-opacity-90">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @if (Model.Any())
+                    {
+                        @foreach (var person in Model)
+                        {
+                            <tr class="hover:bg-gray-50 transition duration-150">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="text-sm font-medium text-gray-900">@person.FirstName @person.LastName</div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">@person.Email</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">@(person.DateOfBirth?.ToString("MMM dd, yyyy"))</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">@(person.Age?.ToString() ?? "-")</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">@person.Gender</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">@person.Country</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium md:sticky md:right-0 md:bg-white md:z-10 md:border-l md:border-gray-200 backdrop-blur-sm bg-opacity-90 group-hover:bg-gray-50">
+                                    <a href="/Persons/Edit/@person.PersonId"
+                                        class="text-indigo-600 hover:text-indigo-900 mr-3">Edit</a>
+                                    <a href="/Persons/Delete/@person.PersonId"
+                                        class="text-red-600 hover:text-red-900">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                No records found
+                                @if (!string.IsNullOrEmpty(ViewBag.CurrentSearchString))
+                                {
+                                    <span> for the search term "@ViewBag.CurrentSearchString"</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.Any())
+        {
+            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                <div class="flex-1 flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-700">
+                            Showing <span class="font-medium">@Model.Count()</span> results
+                            @if (!string.IsNullOrEmpty(ViewBag.CurrentSearchString))
+                            {
+                                <span> for "<span class="font-medium">@ViewBag.CurrentSearchString</span>"</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Clear the form when the clear button is clicked
+        document.getElementById('clearButton').addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('searchText').value = '';
+            document.getElementById('searchForm').submit();
+        });
+    });
+</script>

@@ -6,4 +6,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../ServiceContracts/ServiceContracts.csproj" />
+    <ProjectReference Include="../Services/Services.csproj" />
+  </ItemGroup>
+
 </Project>

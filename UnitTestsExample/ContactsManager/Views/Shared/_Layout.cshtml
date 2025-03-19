@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Contacts Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-50 min-h-screen pt-16">
+    <!-- Navbar - Fixed at top -->
+    <nav class="bg-white shadow-md fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo and Brand -->
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-8 h-8 text-blue-600">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                        </svg>
+                        <span class="ml-2 text-xl font-bold text-gray-800">Contacts Manager</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <a href="/" class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Home</a>
+                    <a href="/Persons"
+                        class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Persons</a>
+                    <a href="/Countries"
+                        class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Countries</a>
+                    <a href="/About"
+                        class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">About</a>
+                </div>
+
+                <!-- Mobile Navigation Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobileMenuButton" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Navigation Menu (Hidden by default) -->
+            <div id="mobileMenu" class="hidden md:hidden pb-4">
+                <a href="/" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Home</a>
+                <a href="/Persons"
+                    class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Persons</a>
+                <a href="/Countries"
+                    class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Countries</a>
+                <a href="/About" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white shadow-inner py-6 mt-12">
+        <div class="container mx-auto px-4">
+            <p class="text-center text-gray-600">© @DateTime.Now.Year - Contacts Manager</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript for Mobile Menu Toggle -->
+    <script>
+        document.getElementById('mobileMenuButton').addEventListener('click', function () {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

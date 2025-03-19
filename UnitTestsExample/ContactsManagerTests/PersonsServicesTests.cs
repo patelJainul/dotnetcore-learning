@@ -9,7 +9,7 @@ namespace ContactsManagerTests;
 public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
 {
     private readonly ICountriesServices _countriesServices = new CountriesServices();
-    private readonly IPersonsServices _personsServices = new PersonsServices();
+    private readonly IPersonsServices _personsServices = new PersonsServices(isSeeded: false);
 
     private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
 
@@ -58,25 +58,25 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     /// <summary>
     /// The function `AddPerson_InvalidCountryId` tests adding a person with an invalid country ID.
     /// </summary>
-    // [Fact]
-    // public void AddPerson_InvalidCountryId()
-    // {
-    //     // Arrange
-    //     var request = new PersonAddRequest
-    //     {
-    //         FirstName = "John",
-    //         LastName = "Doe",
-    //         Email = "johndoe@mail.com",
-    //         DateOfBirth = new DateTime(1990, 1, 1),
-    //         CountryId = Guid.NewGuid(),
-    //     };
+    [Fact]
+    public void AddPerson_InvalidCountryId()
+    {
+        // Arrange
+        var request = new PersonAddRequest
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@mail.com",
+            DateOfBirth = new DateTime(1990, 1, 1),
+            CountryId = Guid.NewGuid(),
+        };
 
-    //     // Act
-    //     void act() => _personsServices.AddPerson(request);
+        // Act
+        void act() => _personsServices.AddPerson(request);
 
-    //     // Assert
-    //     Assert.Throws<ArgumentException>(act);
-    // }
+        // Assert
+        Assert.Throws<ArgumentException>(act);
+    }
 
     /// <summary>
     /// The `AddPerson_ValidRequest` function tests the successful addition of a person with valid input
@@ -86,9 +86,7 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     public void AddPerson_ValidRequest()
     {
         // Arrange
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
         var request = new PersonAddRequest
         {
@@ -139,17 +137,11 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     public void GetPersons_ReturnsListOfPersons()
     {
         // Arrange
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
-        var country2 = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "Canada" }
-        );
+        var country2 = _countriesServices.GetCountries().Skip(1).First();
 
-        var country3 = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United Kingdom" }
-        );
+        var country3 = _countriesServices.GetCountries().Skip(2).First();
 
         List<PersonAddRequest> requestList =
         [
@@ -243,9 +235,7 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     public void GetPersonById_PersonFound()
     {
         // Arrange
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
         var addRequest = new PersonAddRequest
         {
@@ -284,7 +274,12 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
         var filter = "John";
 
         // Act
-        var persons = _personsServices.GetPersons(searchBy: "FirstName", searchString: filter);
+        var persons = _personsServices.GetPersons(
+            searchBy: nameof(PersonResponse.FirstName),
+            searchString: filter,
+            sortBy: null,
+            sortOrder: SortOptions.Ascending
+        );
 
         // Assert
         Assert.NotNull(persons);
@@ -298,17 +293,11 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     [Fact]
     public void GetFilteredPersons_ReturnsListOfPersons()
     {
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
-        var country2 = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "Canada" }
-        );
+        var country2 = _countriesServices.GetCountries().Skip(1).First();
 
-        var country3 = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United Kingdom" }
-        );
+        var country3 = _countriesServices.GetCountries().Skip(2).First();
 
         List<PersonAddRequest> requestList =
         [
@@ -349,38 +338,68 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
 
         List<PersonResponse> responseList = [];
 
-        // Act
-        requestList.ForEach(r =>
+        requestList.ForEach(person =>
         {
-            responseList.Add(_personsServices.AddPerson(r));
+            responseList.Add(_personsServices.AddPerson(person));
         });
+
+        // Act
+
+        // Filter by first name
         var filteredPersonsByFirstName = _personsServices.GetPersons(
-            searchBy: "FirstName",
-            searchString: "John"
+            searchBy: nameof(PersonResponse.FirstName),
+            searchString: "oh",
+            sortBy: null,
+            sortOrder: SortOptions.Ascending
         );
+
+        var expectedFilteredPersonsByFirstName = responseList.Where(p =>
+            p.FirstName.Contains("oh", StringComparison.OrdinalIgnoreCase)
+        );
+
+        _testOutputHelper.WriteLine("Actual Filtered Persons by First Name:");
+        foreach (var person in filteredPersonsByFirstName)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
+        _testOutputHelper.WriteLine("Expected Filtered Persons by First Name:");
+        foreach (var person in expectedFilteredPersonsByFirstName)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
+
+        // Filter by last name
         var filteredPersonsByLastName = _personsServices.GetPersons(
-            searchBy: "LastName",
-            searchString: "Smith"
+            searchBy: nameof(PersonResponse.LastName),
+            searchString: "mi",
+            sortBy: null,
+            sortOrder: SortOptions.Ascending
         );
+
+        var expectedFilteredPersonsByLastName = responseList.Where(p =>
+            p.LastName.Contains("mi", StringComparison.OrdinalIgnoreCase)
+        );
+
+        _testOutputHelper.WriteLine("Actual Filtered Persons by Last Name:");
+        foreach (var person in filteredPersonsByLastName)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
+
+        _testOutputHelper.WriteLine("Expected Filtered Persons by Last Name:");
+        foreach (var person in expectedFilteredPersonsByLastName)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
 
         // Assert
         Assert.NotNull(filteredPersonsByFirstName);
         Assert.NotEmpty(filteredPersonsByFirstName);
-        Assert.Equal(
-            responseList.Where(p =>
-                p.FirstName.Contains("John", StringComparison.CurrentCultureIgnoreCase)
-            ),
-            filteredPersonsByFirstName
-        );
+        Assert.Equal(expectedFilteredPersonsByFirstName, filteredPersonsByFirstName);
 
         Assert.NotNull(filteredPersonsByLastName);
         Assert.NotEmpty(filteredPersonsByLastName);
-        Assert.Equal(
-            responseList.Where(p =>
-                p.LastName.Contains("Smith", StringComparison.CurrentCultureIgnoreCase)
-            ),
-            filteredPersonsByLastName
-        );
+        Assert.Equal(expectedFilteredPersonsByLastName, filteredPersonsByLastName);
     }
 
     #endregion
@@ -396,17 +415,11 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     public void GetSortedPersons_ReturnsListOfPersons()
     {
         // Arrange
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
-        var country2 = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "Canada" }
-        );
+        var country2 = _countriesServices.GetCountries().Skip(1).First();
 
-        var country3 = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United Kingdom" }
-        );
+        var country3 = _countriesServices.GetCountries().Skip(2).First();
 
         List<PersonAddRequest> requestList =
         [
@@ -447,23 +460,66 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
 
         List<PersonResponse> responseList = [];
 
-        // Act
         requestList.ForEach(person =>
         {
             responseList.Add(_personsServices.AddPerson(person));
         });
 
-        var personsAscending = _personsServices.GetPersons(SortOptions.Ascending);
-        var personsDescending = _personsServices.GetPersons(SortOptions.Descending);
+        // Ascending
+        // Act
+        var personsAscending = _personsServices.GetPersons(
+            searchBy: null,
+            searchString: null,
+            sortBy: nameof(PersonResponse.FirstName),
+            sortOrder: SortOptions.Ascending
+        );
+
+        var expectedPersonsAscending = responseList.OrderBy(p => p.FirstName);
+
+        _testOutputHelper.WriteLine("Actual Persons Ascending:");
+        foreach (var person in personsAscending)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
+
+        _testOutputHelper.WriteLine("Expected Persons Ascending:");
+        foreach (var person in expectedPersonsAscending)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
 
         // Assert
         Assert.NotNull(personsAscending);
         Assert.NotEmpty(personsAscending);
-        Assert.Equal(responseList.OrderBy(p => p.FirstName), personsAscending);
+        Assert.Equal(expectedPersonsAscending, personsAscending);
 
+        // Descending
+        // Act
+        var personsDescending = _personsServices.GetPersons(
+            searchBy: null,
+            searchString: null,
+            sortBy: nameof(PersonResponse.FirstName),
+            sortOrder: SortOptions.Descending
+        );
+
+        var expectedPersonsDescending = responseList.OrderByDescending(p => p.FirstName);
+
+        _testOutputHelper.WriteLine("Actual Persons Descending:");
+        foreach (var person in personsDescending)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
+
+        _testOutputHelper.WriteLine("Expected Persons Descending:");
+        foreach (var person in expectedPersonsDescending)
+        {
+            _testOutputHelper.WriteLine(person.ToString());
+        }
+
+        // Assert
         Assert.NotNull(personsDescending);
         Assert.NotEmpty(personsDescending);
-        Assert.Equal(responseList.OrderByDescending(p => p.FirstName), personsDescending);
+        Assert.Equal(expectedPersonsDescending, personsDescending);
     }
 
     #endregion
@@ -489,26 +545,26 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     /// <summary>
     /// The function `UpdatePerson_InvalidCountryId` tests adding a person with an invalid country ID.
     /// </summary>
-    // [Fact]
-    // public void UpdatePerson_InvalidCountryId()
-    // {
-    //     // Arrange
-    //     var addRequest = new PersonAddRequest
-    //     {
-    //         FirstName = "John",
-    //         LastName = "Doe",
-    //         Email = "johndoe@mail.com",
-    //         DateOfBirth = new DateTime(1990, 1, 1),
-    //         CountryId = Guid.NewGuid(),
-    //         Gender = GenderOptions.Male,
-    //         ReceiveNewsLetters = true,
-    //     };
+    [Fact]
+    public void UpdatePerson_InvalidCountryId()
+    {
+        // Arrange
+        var addRequest = new PersonAddRequest
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@mail.com",
+            DateOfBirth = new DateTime(1990, 1, 1),
+            CountryId = Guid.NewGuid(),
+            Gender = GenderOptions.Male,
+            ReceiveNewsLetters = true,
+        };
 
-    //     void act() => _personsServices.AddPerson(addRequest);
+        void act() => _personsServices.AddPerson(addRequest);
 
-    //     // Assert
-    //     Assert.Throws<ArgumentException>(act);
-    // }
+        // Assert
+        Assert.Throws<ArgumentException>(act);
+    }
 
     /// <summary>
     /// The function tests for the scenario where a person is updated with a valid request.
@@ -530,9 +586,7 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
 
         var person = _personsServices.AddPerson(addRequest);
 
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
         addRequest.CountryId = country.CountryId;
 
@@ -578,9 +632,7 @@ public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
     public void DeletePerson_ValidRequest()
     {
         // Arrange
-        var country = _countriesServices.AddCountry(
-            new CountryAddRequest { CountryName = "United States" }
-        );
+        var country = _countriesServices.GetCountries().First();
 
         var addRequest = new PersonAddRequest
         {

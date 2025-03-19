@@ -28,33 +28,31 @@ public interface IPersonsServices
     public List<PersonResponse> GetPersons();
 
     /// <summary>
-    /// This C# function `GetPersons` returns a list of `PersonResponse` objects based on a specified
-    /// filter.
+    /// This C# function `GetPersons` retrieves a list of `PersonResponse` objects based on search criteria
+    /// and sorting options.
     /// </summary>
-    /// <param name="filter">The `filter` parameter in the `GetPersons` method is used to specify the
-    /// criteria or condition based on which the list of persons will be filtered or retrieved. This
-    /// parameter allows you to pass in a string value that can be used to filter the list of persons based
-    /// on certain attributes or properties.</param>
+    /// <param name="searchBy">The `searchBy` parameter is a string that specifies the field or property by
+    /// which the search operation will be performed. It is used to indicate the criteria for searching for
+    /// persons in the list.</param>
+    /// <param name="searchString">The `searchString` parameter is used to specify the value that you want
+    /// to search for in the list of persons. This parameter allows you to filter the list based on a
+    /// specific string value.</param>
+    /// <param name="sortBy">The `sortBy` parameter in the `GetPersons` method is used to specify the field
+    /// by which the list of persons should be sorted. This parameter allows you to specify the field name
+    /// based on which the sorting should be applied, such as sorting by name, age, or any other relevant
+    /// field in</param>
+    /// <param name="SortOptions">SortOptions is an enum that defines the sorting options for the GetPersons
+    /// method. It can have two values: Ascending and Descending.</param>
     /// <returns>
-    /// The `GetPersons` method returns a list of `PersonResponse` objects based on the specified filter
-    /// criteria. If no filter is provided (i.e., the `filter` parameter is null or empty), the method
-    /// returns the entire list of persons. If a filter is provided, the method returns only those persons
-    /// that match the filter criteria.
+    /// The `GetPersons` method returns a list of `PersonResponse` objects based on the provided search
+    /// criteria and sorting options.
     /// </returns>
-    public List<PersonResponse> GetPersons(string? searchBy, string? searchString);
-
-    /// <summary>
-    /// This C# function `GetPersons` returns a list of `PersonResponse` objects based on the specified
-    /// sorting options.
-    /// </summary>
-    /// <param name="SortOptions">SortOptions is an enum that represents different options for sorting the
-    /// list of persons. It could include options such as sorting by name, age, date of birth, etc.</param>
-    /// <returns>
-    /// The `GetPersons` method returns a list of `PersonResponse` objects based on the specified sorting
-    /// options. The method sorts the list of persons according to the specified criteria (e.g., ascending or
-    /// descending order) and returns the sorted list.
-    /// </returns>
-    public List<PersonResponse> GetPersons(SortOptions sort);
+    public List<PersonResponse> GetPersons(
+        string? searchBy,
+        string? searchString,
+        string? sortBy,
+        SortOptions sortOrder = SortOptions.Ascending
+    );
 
     /// <summary>
     /// This C# function retrieves a person's information by their unique identifier, returning a nullable

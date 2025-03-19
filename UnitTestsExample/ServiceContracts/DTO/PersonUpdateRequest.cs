@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Entities;
 using ServiceContracts.Enums;
 
@@ -5,6 +6,7 @@ namespace ServiceContracts.DTO;
 
 public class PersonUpdateRequest
 {
+    [Required(ErrorMessage = "Person ID is required")]
     public Guid PersonId { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }

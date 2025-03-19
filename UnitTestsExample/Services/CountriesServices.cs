@@ -1,12 +1,21 @@
 using Entities;
 using ServiceContracts;
 using ServiceContracts.DTO;
+using Services.SeedData;
 
 namespace Services;
 
 public class CountriesServices : ICountriesServices
 {
     private readonly List<Country> _countries = [];
+
+    public CountriesServices(bool isSeeded = true)
+    {
+        if (isSeeded)
+        {
+            _countries.AddRange(CountriesMockData.GetCountries());
+        }
+    }
 
     public CountryResponse AddCountry(CountryAddRequest? request)
     {

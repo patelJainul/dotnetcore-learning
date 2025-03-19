@@ -1,4 +1,5 @@
 using Entities;
+using ServiceContracts.Enums;
 
 namespace ServiceContracts.DTO;
 
@@ -12,6 +13,7 @@ public class PersonResponse
     public string? Gender { get; set; }
     public string? Address { get; set; }
     public string? Country { get; set; }
+    public Guid? CountryId { get; set; }
     public bool ReceiveNewsLetters { get; set; }
 
     public double? Age
@@ -49,20 +51,23 @@ public class PersonResponse
     /// </returns>
     public override bool Equals(object? obj)
     {
-        if (obj == null || GetType() != obj.GetType())
-        {
+        if (obj == null)
             return false;
-        }
+        if (obj is not PersonResponse)
+            return false;
 
-        PersonResponse person = (PersonResponse)obj;
-        return PersonId == person.PersonId
-            && FirstName == person.FirstName
-            && LastName == person.LastName
-            && Email == person.Email
-            && DateOfBirth == person.DateOfBirth
-            && Address == person.Address
-            && Country == person.Country
-            && ReceiveNewsLetters == person.ReceiveNewsLetters;
+        PersonResponse other = (PersonResponse)obj;
+        return PersonId == other.PersonId
+            && FirstName == other.FirstName
+            && LastName == other.LastName
+            && Email == other.Email
+            && DateOfBirth == other.DateOfBirth
+            && Gender == other.Gender
+            && CountryId == other.CountryId
+            && Country == other.Country
+            && ReceiveNewsLetters == other.ReceiveNewsLetters
+            && Age == other.Age
+            && Address == other.Address;
     }
 
     public override int GetHashCode()
@@ -72,7 +77,23 @@ public class PersonResponse
 
     public override string ToString()
     {
-        return $"Person ID: {PersonId}, First Name: {FirstName}, Last Name: {LastName}, Email: {Email}, Date of Birth: {DateOfBirth?.ToString("yyyy-MM-dd")}, Address: {Address}, Country: {Country}, Receive News Letters: {ReceiveNewsLetters}, Age: {Age}";
+        return $"PersonId: {PersonId}, FirstName: {FirstName}, LastName: {LastName}, Email: {Email}, DateOfBirth: {DateOfBirth}, Gender: {Gender}, CountryId: {CountryId}, Country: {Country}, ReceiveNewsLetters: {ReceiveNewsLetters}, Age: {Age}, Address: {Address}";
+    }
+
+    public PersonUpdateRequest ToPersonUpdateRequest()
+    {
+        return new PersonUpdateRequest
+        {
+            PersonId = PersonId,
+            FirstName = FirstName,
+            LastName = LastName,
+            Email = Email,
+            DateOfBirth = DateOfBirth,
+            Gender = Gender != null ? Enum.Parse<GenderOptions>(Gender) : null,
+            CountryId = CountryId,
+            Address = Address,
+            ReceiveNewsLetters = ReceiveNewsLetters,
+        };
     }
 }
 
@@ -90,6 +111,7 @@ public static class PersonResponseExtensions
             Gender = person.Gender,
             Address = person.Address,
             ReceiveNewsLetters = person.ReceiveNewsLetters,
+            CountryId = person.CountryId,
         };
     }
 }

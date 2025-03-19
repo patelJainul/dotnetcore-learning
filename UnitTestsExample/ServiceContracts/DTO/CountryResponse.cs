@@ -5,7 +5,7 @@ namespace ServiceContracts.DTO;
 public class CountryResponse
 {
     public Guid CountryId { get; set; }
-    public required string CountryName { get; set; }
+    public string? CountryName { get; set; }
 
     /// <summary>
     /// The Equals method in C# is overridden to compare CountryResponse objects based on their CountryId
@@ -23,17 +23,23 @@ public class CountryResponse
     /// </returns>
     public override bool Equals(object? obj)
     {
-        if (obj == null || GetType() != obj.GetType())
-        {
+        if (obj == null)
             return false;
-        }
-        return CountryId == (obj as CountryResponse)?.CountryId
-            && CountryName == (obj as CountryResponse)?.CountryName;
+        if (obj is not CountryResponse)
+            return false;
+
+        CountryResponse other = (CountryResponse)obj;
+        return CountryId == other.CountryId && CountryName == other.CountryName;
     }
 
     public override int GetHashCode()
     {
         return base.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return $"CountryId: {CountryId}, CountryName: {CountryName}";
     }
 }
 
