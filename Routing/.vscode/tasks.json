@@ -10,13 +10,6 @@
     },
     {
       "type": "dotnet",
-      "task": "clean",
-      "group": "build",
-      "problemMatcher": [],
-      "label": "dotnet: clean"
-    },
-    {
-      "type": "dotnet",
       "task": "watch RoutingExamples",
       "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/Routing/RoutingExamples/RoutingExamples.csproj",
       "problemMatcher": [],

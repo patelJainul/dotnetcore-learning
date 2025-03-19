@@ -10,13 +10,6 @@
     },
     {
       "type": "dotnet",
-      "task": "clean",
-      "group": "clean",
-      "problemMatcher": [],
-      "label": "dotnet: clean"
-    },
-    {
-      "type": "dotnet",
       "task": "watch BankingAssignment",
       "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/ControllerAssignment/BankingAssignment/BankingAssignment.csproj",
       "problemMatcher": [],

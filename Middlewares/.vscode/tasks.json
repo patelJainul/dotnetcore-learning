@@ -18,13 +18,6 @@
       "group": "build",
       "problemMatcher": [],
       "label": "dotnet: build"
-    },
-    {
-      "type": "dotnet",
-      "task": "clean",
-      "group": "build",
-      "problemMatcher": [],
-      "label": "dotnet: clean"
     }
   ]
 }
