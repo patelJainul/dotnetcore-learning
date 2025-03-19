@@ -69,4 +69,28 @@ public interface IPersonsServices
     /// information. If the person is not found, the method returns `null`.
     /// </returns>
     public PersonResponse? GetPersonById(Guid? personId);
+
+    /// <summary>
+    /// The UpdatePerson function in C# updates a person based on the provided request.
+    /// </summary>
+    /// <param name="request">The `PersonUpdateRequest` parameter is a request object that contains the data
+    /// needed to update a person's information. It is marked as nullable with the `?` symbol, which means
+    /// it can accept a null value.</param>
+    /// <returns>
+    /// The `UpdatePerson` method returns a `PersonResponse` object, which likely contains information about the
+    /// person that was updated, such as their ID, name, age, address, etc.
+    /// </returns>
+    public PersonResponse UpdatePerson(PersonUpdateRequest? request);
+
+    /// <summary>
+    /// The DeletePerson function in C# deletes a person record based on the provided personId.
+    /// </summary>
+    /// <param name="personId">The `DeletePerson` method takes a parameter `personId` of type `Guid?`, which
+    /// means it is a nullable `Guid` type. This parameter is used to identify the person that needs to be
+    /// deleted from the system.</param>
+    /// <returns>
+    /// The `DeletePerson` method returns a `PersonResponse` object, which likely contains information about the
+    /// person that was deleted, such as their ID, name, age, address, etc.
+    /// </returns>
+    public PersonResponse DeletePerson(Guid? personId);
 }

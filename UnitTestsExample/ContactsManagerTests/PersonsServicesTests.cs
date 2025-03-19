@@ -377,4 +377,108 @@ public class PersonsServicesTests
     }
 
     #endregion
+
+    #region UpdatePersonTestCases
+
+    /// <summary>
+    /// The function tests for the scenario where a person is not found by their ID.
+    /// </summary>
+    [Fact]
+    public void UpdatePerson_PersonNotFound()
+    {
+        // Arrange
+        var updateRequest = new PersonUpdateRequest { PersonId = Guid.NewGuid() };
+
+        // Act
+        void act() => _personsServices.UpdatePerson(updateRequest);
+
+        // Assert
+        Assert.Throws<ArgumentException>(act);
+    }
+
+    /// <summary>
+    /// The function tests for the scenario where a person is updated with a valid request.
+    /// </summary>
+    [Fact]
+    public void UpdatePerson_ValidRequest()
+    {
+        // Arrange
+        var addRequest = new PersonAddRequest
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@mail.com",
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Address = "1234 Elm Street",
+            CountryId = Guid.NewGuid(),
+            Gender = GenderOptions.Male,
+            ReceiveNewsLetters = true,
+        };
+
+        var person = _personsServices.AddPerson(addRequest);
+
+        var updateRequest = new PersonUpdateRequest
+        {
+            PersonId = person.PersonId,
+            FirstName = "Jane",
+            LastName = "Doe",
+        };
+
+        // Act
+        var updatedPerson = _personsServices.UpdatePerson(updateRequest);
+        var expectedPerson = _personsServices.GetPersonById(person.PersonId);
+
+        // Assert
+        Assert.Equal(expectedPerson, updatedPerson);
+    }
+
+    #endregion
+
+    #region DeletePersonTestCases
+
+    /// <summary>
+    /// The function tests for the scenario where a person is not found by their ID.
+    /// </summary>
+    [Fact]
+    public void DeletePerson_PersonNotFound()
+    {
+        // Arrange
+        Guid personId = Guid.NewGuid();
+
+        // Act
+        void act() => _personsServices.DeletePerson(personId);
+
+        // Assert
+        Assert.Throws<ArgumentException>(act);
+    }
+
+    /// <summary>
+    /// The function tests for the scenario where a person is deleted with a valid request.
+    /// </summary>
+    [Fact]
+    public void DeletePerson_ValidRequest()
+    {
+        // Arrange
+        var addRequest = new PersonAddRequest
+        {
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@mail.com",
+            DateOfBirth = new DateTime(1990, 1, 1),
+            Address = "1234 Elm Street",
+            CountryId = Guid.NewGuid(),
+            Gender = GenderOptions.Male,
+            ReceiveNewsLetters = true,
+        };
+
+        var person = _personsServices.AddPerson(addRequest);
+
+        // Act
+        var deletedPerson = _personsServices.DeletePerson(person.PersonId);
+
+        // Assert
+        Assert.Equal(person, deletedPerson);
+    }
+
+    #endregion
 }

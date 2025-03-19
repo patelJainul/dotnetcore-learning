@@ -65,4 +65,32 @@ public class PersonsServices : IPersonsServices
     {
         return _persons.FirstOrDefault(p => p.PersonId == personId)?.ToPersonResponse();
     }
+
+    public PersonResponse UpdatePerson(PersonUpdateRequest? request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(request));
+        ArgumentNullException.ThrowIfNull(request.PersonId, nameof(request.PersonId));
+
+        Person? person =
+            _persons.FirstOrDefault(p => p.PersonId == request.PersonId)
+            ?? throw new ArgumentException("Given person id doesn't exist");
+
+        person = request.ToUpdatedPerson(person);
+
+        _persons.RemoveAll(p => p.PersonId == request.PersonId);
+        _persons.Add(person);
+        return person.ToPersonResponse();
+    }
+
+    public PersonResponse DeletePerson(Guid? personId)
+    {
+        ArgumentNullException.ThrowIfNull(personId, nameof(personId));
+
+        Person? person =
+            _persons.FirstOrDefault(p => p.PersonId == personId)
+            ?? throw new ArgumentException("Given person id doesn't exist");
+
+        _persons.RemoveAll(p => p.PersonId == personId);
+        return person.ToPersonResponse();
+    }
 }
