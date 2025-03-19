@@ -28,12 +28,12 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden md:flex items-center space-x-4">
                     <a href="/" class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Home</a>
-                    <a href="/Persons"
+                    <a href="/Persons/Index"
                         class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Persons</a>
-                    <a href="/Countries"
-                        class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Countries</a>
                     <a href="/About"
                         class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">About</a>
+                    <a href="/About/Developer"
+                        class="px-3 py-2 text-gray-700 hover:text-blue-600 transition duration-150">Developer</a>
                 </div>
 
                 <!-- Mobile Navigation Button -->
@@ -53,9 +53,11 @@
                 <a href="/" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Home</a>
                 <a href="/Persons"
                     class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Persons</a>
-                <a href="/Countries"
-                    class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Countries</a>
                 <a href="/About" class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">About</a>
+                <a href="/About/Developer"
+                    class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Developer</a>
+                <a href="/About/Contact"
+                    class="block py-2 px-4 text-gray-700 hover:bg-gray-100 hover:text-blue-600">Contact</a>
             </div>
         </div>
     </nav>
@@ -81,6 +83,99 @@
     </script>
 
     @RenderSection("Scripts", required: false)
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="toast-success bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md flex justify-between items-center w-80"
+                role="alert">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span>@TempData["SuccessMessage"]</span>
+                </div>
+                <button type="button" class="toast-close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="toast-error bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded shadow-md flex justify-between items-center w-80"
+                role="alert">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                    <span>@TempData["ErrorMessage"]</span>
+                </div>
+                <button type="button" class="toast-close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        }
+        @if (TempData["InfoMessage"] != null)
+        {
+            <div class="toast-info bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded shadow-md flex justify-between items-center w-80"
+                role="alert">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>@TempData["InfoMessage"]</span>
+                </div>
+                <button type="button" class="toast-close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+        }
+    </div>
+
+    <!-- Toast Notification JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Auto-hide toasts after 5 seconds
+            setTimeout(function () {
+                const toasts = document.querySelectorAll('.toast-success, .toast-error, .toast-info');
+                toasts.forEach(toast => {
+                    fadeOut(toast);
+                });
+            }, 5000);
+
+            // Add click event listeners to close buttons
+            const closeButtons = document.querySelectorAll('.toast-close');
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const toast = this.closest('[role="alert"]');
+                    fadeOut(toast);
+                });
+            });
+
+            function fadeOut(element) {
+                element.style.opacity = '1';
+                (function fade() {
+                    if ((element.style.opacity -= 0.1) < 0) {
+                        element.style.display = 'none';
+                    } else {
+                        requestAnimationFrame(fade);
+                    }
+                })();
+            }
+        });
+    </script>
 </body>
 
 </html>

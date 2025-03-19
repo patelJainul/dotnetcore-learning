@@ -123,7 +123,7 @@
                 </div>
             </div>
             <div class="flex items-end gap-3 mt-auto">
-                <button type="submit"
+                <button type="submit" id="searchButton"
                     class="px-5 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -252,5 +252,64 @@
             document.getElementById('searchText').value = '';
             document.getElementById('searchForm').submit();
         });
+
+        // Check for search parameters and display a toast notification
+        const searchString = '@ViewBag.CurrentSearchString';
+        const searchBy = '@ViewBag.CurrentSearchBy';
+        
+        // Create toast notification for search
+        if (searchString && searchString.length > 0 && searchBy) {
+            // Create a toast div manually since we can't use TempData here (client-side JS)
+            const searchField = document.getElementById('searchField');
+            const searchByText = searchField.options[searchField.selectedIndex].text;
+            
+            // Create toast container if it doesn't exist already
+            let toastContainer = document.getElementById('toast-container');
+            
+            // Create a new toast element
+            const toast = document.createElement('div');
+            toast.className = 'toast-info bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded shadow-md flex justify-between items-center w-80';
+            toast.setAttribute('role', 'alert');
+            
+            // Create the inner content
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>Searching "${searchString}" in ${searchByText}</span>
+                </div>
+                <button type="button" class="toast-close">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            
+            // Add the toast to the container
+            toastContainer.appendChild(toast);
+            
+            // Add click handler for close button
+            const closeButton = toast.querySelector('.toast-close');
+            closeButton.addEventListener('click', function() {
+                fadeOut(toast);
+            });
+            
+            // Auto-hide after 5 seconds
+            setTimeout(function() {
+                fadeOut(toast);
+            }, 5000);
+
+            function fadeOut(element) {
+                element.style.opacity = '1';
+                (function fade() {
+                    if ((element.style.opacity -= 0.1) < 0) {
+                        element.style.display = 'none';
+                    } else {
+                        requestAnimationFrame(fade);
+                    }
+                })();
+            }
+        }
     });
 </script>
