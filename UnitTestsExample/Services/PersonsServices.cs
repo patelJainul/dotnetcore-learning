@@ -3,22 +3,13 @@ using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
 using Services.Helper;
-using Services.SeedData;
 
 namespace Services;
 
-public class PersonsServices : IPersonsServices
+public class PersonsServices(ContactDbContext context) : IPersonsServices
 {
-    private readonly List<Person> _persons = [];
-    private readonly ICountriesServices _countriesServices = new CountriesServices();
-
-    public PersonsServices(bool isSeeded = true)
-    {
-        if (isSeeded)
-        {
-            _persons.AddRange(PersonsMockData.GetPersons());
-        }
-    }
+    private readonly ContactDbContext _db = context;
+    private readonly ICountriesServices _countriesServices = new CountriesServices(context);
 
     private PersonResponse ConvertToPersonResponse(Person person)
     {
@@ -41,103 +32,99 @@ public class PersonsServices : IPersonsServices
 
         Person person = request.ToPerson();
         person.PersonId = Guid.NewGuid();
-        _persons.Add(person);
+        _db.InsertPerson(person);
 
         return ConvertToPersonResponse(person);
     }
 
     public List<PersonResponse> GetPersons()
     {
-        return [.. _persons.Select(ConvertToPersonResponse)];
+        return [.. _db.GetPersonsStoredProcedure().Select(ConvertToPersonResponse)];
     }
 
     public List<PersonResponse> GetPersons(
         string? searchBy,
-        string? searchString,
-        string? sortBy,
+        string? searchString = "",
+        string? sortBy = nameof(PersonResponse.FirstName),
         SortOptions sortOrder = SortOptions.Ascending
     )
     {
         // Get all persons and convert to response
-        var persons = _persons.Select(ConvertToPersonResponse).ToList();
-
-        // Apply search if search parameters are provided
-        if (!string.IsNullOrEmpty(searchBy) && !string.IsNullOrEmpty(searchString))
-        {
-            persons = persons
-                .Where(person =>
-                    searchBy switch
-                    {
-                        nameof(PersonResponse.FirstName) => person.FirstName.Contains(
-                            searchString,
-                            StringComparison.OrdinalIgnoreCase
-                        ),
-                        nameof(PersonResponse.LastName) => person.LastName.Contains(
-                            searchString,
-                            StringComparison.OrdinalIgnoreCase
-                        ),
-                        nameof(PersonResponse.Email) => person.Email?.Contains(
-                            searchString,
-                            StringComparison.OrdinalIgnoreCase
-                        ) ?? false,
-                        nameof(PersonResponse.DateOfBirth) => person
-                            .DateOfBirth?.ToString()
-                            .Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false,
-                        nameof(PersonResponse.Age) => person
-                            .Age?.ToString()
-                            .Contains(searchString, StringComparison.OrdinalIgnoreCase) ?? false,
-                        nameof(PersonResponse.Gender) => person.Gender?.Equals(
-                            searchString,
-                            StringComparison.OrdinalIgnoreCase
-                        ) ?? false,
-                        nameof(PersonResponse.Country) => person.Country?.Contains(
-                            searchString,
-                            StringComparison.OrdinalIgnoreCase
-                        ) ?? false,
-                        nameof(PersonResponse.Address) => person.Address?.Contains(
-                            searchString,
-                            StringComparison.OrdinalIgnoreCase
-                        ) ?? false,
-                        nameof(PersonResponse.ReceiveNewsLetters) => person.ReceiveNewsLetters
-                            == (searchString == "true"),
-                        _ => true,
-                    }
-                )
-                .ToList();
-        }
+        var persons = _db
+            .Persons.Select(ConvertToPersonResponse)
+            .Where(person =>
+                searchBy switch
+                {
+                    nameof(PersonResponse.FirstName) => person.FirstName.Contains(
+                        searchString ?? "",
+                        StringComparison.OrdinalIgnoreCase
+                    ),
+                    nameof(PersonResponse.LastName) => person.LastName.Contains(
+                        searchString ?? "",
+                        StringComparison.OrdinalIgnoreCase
+                    ),
+                    nameof(PersonResponse.Email) => person.Email?.Contains(
+                        searchString ?? "",
+                        StringComparison.OrdinalIgnoreCase
+                    ) ?? false,
+                    nameof(PersonResponse.DateOfBirth) => person
+                        .DateOfBirth?.ToString()
+                        .Contains(searchString ?? "", StringComparison.OrdinalIgnoreCase) ?? false,
+                    nameof(PersonResponse.Age) => person
+                        .Age?.ToString()
+                        .Contains(searchString ?? "", StringComparison.OrdinalIgnoreCase) ?? false,
+                    nameof(PersonResponse.Gender) => person.Gender?.Equals(
+                        searchString ?? "",
+                        StringComparison.OrdinalIgnoreCase
+                    ) ?? false,
+                    nameof(PersonResponse.Country) => person.Country?.Contains(
+                        searchString ?? "",
+                        StringComparison.OrdinalIgnoreCase
+                    ) ?? false,
+                    nameof(PersonResponse.Address) => person.Address?.Contains(
+                        searchString ?? "",
+                        StringComparison.OrdinalIgnoreCase
+                    ) ?? false,
+                    nameof(PersonResponse.ReceiveNewsLetters) => person.ReceiveNewsLetters
+                        == (searchString ?? "").Equals("true"),
+                    _ => true,
+                }
+            )
+            .ToList();
 
         // Apply sorting if sortBy is provided
         if (!string.IsNullOrEmpty(sortBy))
         {
             persons = sortBy switch
             {
-                nameof(PersonResponse.FirstName) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.FirstName).ToList()
-                    : persons.OrderByDescending(p => p.FirstName).ToList(),
+                $"{nameof(PersonResponse.FirstName)},{nameof(PersonResponse.LastName)}" => sortOrder
+                == SortOptions.Ascending
+                    ? [.. persons.OrderBy(p => p.FirstName)]
+                    : [.. persons.OrderByDescending(p => p.FirstName)],
                 nameof(PersonResponse.LastName) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.LastName).ToList()
-                    : persons.OrderByDescending(p => p.LastName).ToList(),
+                    ? [.. persons.OrderBy(p => p.LastName)]
+                    : [.. persons.OrderByDescending(p => p.LastName)],
                 nameof(PersonResponse.Email) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.Email).ToList()
-                    : persons.OrderByDescending(p => p.Email).ToList(),
+                    ? [.. persons.OrderBy(p => p.Email)]
+                    : [.. persons.OrderByDescending(p => p.Email)],
                 nameof(PersonResponse.DateOfBirth) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.DateOfBirth).ToList()
-                    : persons.OrderByDescending(p => p.DateOfBirth).ToList(),
+                    ? [.. persons.OrderBy(p => p.DateOfBirth)]
+                    : [.. persons.OrderByDescending(p => p.DateOfBirth)],
                 nameof(PersonResponse.Age) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.Age).ToList()
-                    : persons.OrderByDescending(p => p.Age).ToList(),
+                    ? [.. persons.OrderBy(p => p.Age)]
+                    : [.. persons.OrderByDescending(p => p.Age)],
                 nameof(PersonResponse.Gender) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.Gender).ToList()
-                    : persons.OrderByDescending(p => p.Gender).ToList(),
+                    ? [.. persons.OrderBy(p => p.Gender)]
+                    : [.. persons.OrderByDescending(p => p.Gender)],
                 nameof(PersonResponse.Country) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.Country).ToList()
-                    : persons.OrderByDescending(p => p.Country).ToList(),
+                    ? [.. persons.OrderBy(p => p.Country)]
+                    : [.. persons.OrderByDescending(p => p.Country)],
                 nameof(PersonResponse.Address) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.Address).ToList()
-                    : persons.OrderByDescending(p => p.Address).ToList(),
+                    ? [.. persons.OrderBy(p => p.Address)]
+                    : [.. persons.OrderByDescending(p => p.Address)],
                 nameof(PersonResponse.ReceiveNewsLetters) => sortOrder == SortOptions.Ascending
-                    ? persons.OrderBy(p => p.ReceiveNewsLetters).ToList()
-                    : persons.OrderByDescending(p => p.ReceiveNewsLetters).ToList(),
+                    ? [.. persons.OrderBy(p => p.ReceiveNewsLetters)]
+                    : [.. persons.OrderByDescending(p => p.ReceiveNewsLetters)],
                 _ => persons,
             };
         }
@@ -149,7 +136,7 @@ public class PersonsServices : IPersonsServices
     {
         ArgumentNullException.ThrowIfNull(personId, nameof(personId));
 
-        Person? person = _persons.FirstOrDefault(p => p.PersonId == personId);
+        Person? person = _db.Persons.FirstOrDefault(p => p.PersonId == personId);
         if (person == null)
         {
             return null;
@@ -171,13 +158,12 @@ public class PersonsServices : IPersonsServices
         }
 
         Person? person =
-            _persons.FirstOrDefault(p => p.PersonId == request.PersonId)
+            _db.Persons.FirstOrDefault(p => p.PersonId == request.PersonId)
             ?? throw new ArgumentException("Given person id doesn't exist");
 
         person = request.ToUpdatedPerson(person);
-
-        _persons.RemoveAll(p => p.PersonId == request.PersonId);
-        _persons.Add(person);
+        _db.Persons.Update(person);
+        _db.SaveChanges();
         return ConvertToPersonResponse(person);
     }
 
@@ -186,10 +172,11 @@ public class PersonsServices : IPersonsServices
         ArgumentNullException.ThrowIfNull(personId, nameof(personId));
 
         Person? person =
-            _persons.FirstOrDefault(p => p.PersonId == personId)
+            _db.Persons.FirstOrDefault(p => p.PersonId == personId)
             ?? throw new ArgumentException("Given person id doesn't exist");
 
-        _persons.RemoveAll(p => p.PersonId == personId);
+        _db.Persons.Remove(person);
+        _db.SaveChanges();
         return ConvertToPersonResponse(person);
     }
 }

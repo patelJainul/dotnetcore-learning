@@ -14,7 +14,7 @@
         bool isCurrentSortColumn = currentSortBy == columnName;
         
         // If already sorting by this column, toggle the sort order
-        var newSortOrder = (isCurrentSortColumn && sortOrder == SortOptions.Ascending) 
+        var newSortOrder = (isCurrentSortColumn && sortOrder == SortOptions.Ascending.ToString()) 
             ? SortOptions.Descending 
             : SortOptions.Ascending;
         

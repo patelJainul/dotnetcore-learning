@@ -1,6 +1,4 @@
-using Entities;
-
-namespace Services.SeedData;
+namespace Entities.SeedData;
 
 public class CountriesMockData
 {

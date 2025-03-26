@@ -1,3 +1,5 @@
+using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using Services;
@@ -6,7 +8,9 @@ namespace ContactsManagerTests;
 
 public class CountriesServicesTests()
 {
-    private readonly ICountriesServices _countriesServices = new CountriesServices(isSeeded: false);
+    private readonly ICountriesServices _countriesServices = new CountriesServices(
+        new ContactDbContext(new DbContextOptions<ContactDbContext>())
+    );
 
     #region AddCountryTestCases
 

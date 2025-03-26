@@ -1,3 +1,5 @@
+using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using ServiceContracts.DTO;
 using ServiceContracts.Enums;
@@ -8,8 +10,12 @@ namespace ContactsManagerTests;
 
 public class PersonsServicesTests(ITestOutputHelper testOutputHelper)
 {
-    private readonly ICountriesServices _countriesServices = new CountriesServices();
-    private readonly IPersonsServices _personsServices = new PersonsServices(isSeeded: false);
+    private readonly ICountriesServices _countriesServices = new CountriesServices(
+        new ContactDbContext(new DbContextOptions<ContactDbContext>())
+    );
+    private readonly IPersonsServices _personsServices = new PersonsServices(
+        new ContactDbContext(new DbContextOptions<ContactDbContext>())
+    );
 
     private readonly ITestOutputHelper _testOutputHelper = testOutputHelper;
 

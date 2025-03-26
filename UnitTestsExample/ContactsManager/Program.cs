@@ -1,3 +1,5 @@
+using Entities;
+using Microsoft.EntityFrameworkCore;
 using ServiceContracts;
 using Services;
 
@@ -5,8 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IPersonsServices, PersonsServices>();
-builder.Services.AddSingleton<ICountriesServices, CountriesServices>();
+builder.Services.AddScoped<IPersonsServices, PersonsServices>();
+builder.Services.AddScoped<ICountriesServices, CountriesServices>();
+
+builder.Services.AddDbContext<ContactDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 var app = builder.Build();
 
