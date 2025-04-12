@@ -5,6 +5,10 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitiesManager.WebAPI", "CitiesManager.WebAPI\CitiesManager.WebAPI.csproj", "{3719CDF0-EFFC-45A3-A6A1-41AD82CF0113}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactsManager.Infrastructure", "ContactsManager.Infrastructure\ContactsManager.Infrastructure.csproj", "{DCDA9E97-07B5-460E-8D24-426D43D6E381}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContactsManager.Core", "ContactsManager.Core\ContactsManager.Core.csproj", "{6F210837-C484-4793-BD62-9BB3CB94EB51}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{3719CDF0-EFFC-45A3-A6A1-41AD82CF0113}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3719CDF0-EFFC-45A3-A6A1-41AD82CF0113}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3719CDF0-EFFC-45A3-A6A1-41AD82CF0113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCDA9E97-07B5-460E-8D24-426D43D6E381}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCDA9E97-07B5-460E-8D24-426D43D6E381}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCDA9E97-07B5-460E-8D24-426D43D6E381}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCDA9E97-07B5-460E-8D24-426D43D6E381}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F210837-C484-4793-BD62-9BB3CB94EB51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F210837-C484-4793-BD62-9BB3CB94EB51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F210837-C484-4793-BD62-9BB3CB94EB51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F210837-C484-4793-BD62-9BB3CB94EB51}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
