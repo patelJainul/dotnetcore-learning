@@ -4,33 +4,45 @@ using ContactsManager.Core.ServiceContracts.Cities;
 
 namespace ContactsManager.Core.Services.Cities;
 
-public class CitiesGetServices(ICitiesRepository citiesRepository) : ICityGetServices
+public class CitiesGetServices(ICityRepository citiesRepository) : ICityGetServices
 {
-    private readonly ICitiesRepository _citiesRepository = citiesRepository;
+    private readonly ICityRepository _cityRepository = citiesRepository;
 
-    public Task<List<CityResponse>> GetAllCitiesAsync(CancellationToken cancellationToken = default)
+    public async Task<List<CityResponse>> GetAllCitiesAsync(
+        CancellationToken cancellationToken = default
+    )
     {
-        return _citiesRepository
-            .GetAllCitiesAsync(cancellationToken)
-            .ContinueWith(
-                task => task.Result.Select(city => city.ToCityResponse()).ToList(),
-                cancellationToken
-            );
+        var cityList = await _cityRepository.GetAllCitiesAsync(cancellationToken);
+
+        return [.. cityList.Select(city => city.ToCityResponse())];
     }
 
-    public Task<List<CityResponse>> GetCitiesByNameAsync(
+    public async Task<List<CityResponse>> GetCitiesByNameAsync(
         string name,
         CancellationToken cancellationToken = default
     )
     {
-        throw new NotImplementedException();
+        var cityList = await _cityRepository.GetCitiesByNameAsync(name, cancellationToken);
+
+        return [.. cityList.Select(city => city.ToCityResponse())];
     }
 
-    public Task<CityResponse> GetCityByIdAsync(
-        Guid cityId,
+    public async Task<CityResponse?> GetCityByIdAsync(
+        Guid? cityId,
         CancellationToken cancellationToken = default
     )
     {
-        throw new NotImplementedException();
+        ArgumentNullException.ThrowIfNull(cityId, nameof(cityId));
+        if (cityId == Guid.Empty)
+        {
+            throw new ArgumentNullException(nameof(cityId), "City ID cannot be empty.");
+        }
+        if (cityId == default)
+        {
+            throw new ArgumentException("City ID cannot be default.", nameof(cityId));
+        }
+        var city = await _cityRepository.GetCityByIdAsync(cityId.Value, cancellationToken);
+
+        return city?.ToCityResponse();
     }
 }

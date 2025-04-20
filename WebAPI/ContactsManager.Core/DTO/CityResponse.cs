@@ -1,5 +1,6 @@
 using CitiesManager.Core.Domain.Entities;
-using ContactsManager.Core.Helper;
+using ContactsManager.Core.Enums;
+using ContactsManager.Core.Helpers;
 
 namespace ContactsManager.Core.DTO;
 
@@ -8,9 +9,9 @@ public class CityResponse
     public Guid CityId { get; set; }
     public string Name { get; set; } = string.Empty;
 
-    public JsonResponse<CityResponse> ToJsonResponse()
+    public JsonResponse<CityResponse> ToJsonResponse(string? message = "")
     {
-        return JsonResponse<CityResponse>.ToJsonResponse(this);
+        return JsonResponse<CityResponse>.ToJsonResponse(this, message);
     }
 }
 

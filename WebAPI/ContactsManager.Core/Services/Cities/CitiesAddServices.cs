@@ -4,9 +4,9 @@ using ContactsManager.Core.ServiceContracts.Cities;
 
 namespace ContactsManager.Core.Services.Cities;
 
-public class CityAddServices(ICitiesRepository citiesRepository) : ICityAddServices
+public class CityAddServices(ICityRepository citiesRepository) : ICityAddServices
 {
-    private readonly ICitiesRepository _citiesRepository = citiesRepository;
+    private readonly ICityRepository _cityRepository = citiesRepository;
 
     public async Task<CityResponse> AddCityAsync(
         CityAddRequest cityAddRequest,
@@ -16,8 +16,8 @@ public class CityAddServices(ICitiesRepository citiesRepository) : ICityAddServi
         ArgumentNullException.ThrowIfNull(cityAddRequest, nameof(cityAddRequest));
         ArgumentException.ThrowIfNullOrEmpty(cityAddRequest.Name, nameof(cityAddRequest.Name));
 
-        return await _citiesRepository
-            .AddCityAsync(cityAddRequest.ToCity(), cancellationToken)
-            .ContinueWith(task => task.Result.ToCityResponse(), cancellationToken);
+        return (
+            await _cityRepository.AddCityAsync(cityAddRequest.ToCity(), cancellationToken)
+        ).ToCityResponse();
     }
 }

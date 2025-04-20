@@ -1,20 +1,25 @@
 using CitiesManager.Core.Domain.Entities;
 using CitiesManager.Infrastructure.DatabaseContext;
 using ContactsManager.Core.Domain.RepositoryContracts;
+using ContactsManager.Core.DTO;
+using ContactsManager.Core.Helpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContactsManager.Infrastructure.Repositories;
 
-public class CitiesRepository(ApplicationDbContext db) : ICitiesRepository
+public class CitiesRepository(ApplicationDbContext db) : ICityRepository
 {
     private readonly ApplicationDbContext _db = db;
 
     public async Task<City> AddCityAsync(City city, CancellationToken cancellationToken = default)
     {
+        // add city to the database
         _db.Cities.Add(city);
-        bool rowsAffected = await _db.SaveChangesAsync(cancellationToken)
-            .ContinueWith(task => task.Result > 0, cancellationToken);
 
+        // check that the city was added successfully
+        bool rowsAffected = (await _db.SaveChangesAsync(cancellationToken)) > 0;
+
+        // if the city was not added successfully, throw an exception
         if (!rowsAffected)
         {
             throw new DbUpdateException("Failed to add the city to the database.");
@@ -23,18 +28,25 @@ public class CitiesRepository(ApplicationDbContext db) : ICitiesRepository
         return city;
     }
 
-    public Task<bool> DeleteCityAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task<JsonResponse<bool>> DeleteCityAsync(
+        Guid id,
+        CancellationToken cancellationToken = default
+    )
     {
+        // remove the city from the database
         _db.Cities.RemoveRange(_db.Cities.Where(c => c.CityId == id));
-        return _db.SaveChangesAsync(cancellationToken)
-            .ContinueWith(task => task.Result > 0, cancellationToken);
+
+        // save changes to the database
+        return new JsonResponse<bool>
+        {
+            Data = (await _db.SaveChangesAsync(cancellationToken)) > 0,
+        };
     }
 
     public Task<List<City>> GetAllCitiesAsync(CancellationToken cancellationToken = default)
     {
-        return _db
-            .Cities.ToListAsync(cancellationToken)
-            .ContinueWith(task => task.Result, cancellationToken);
+        // get all cities from the database
+        return _db.Cities.ToListAsync(cancellationToken);
     }
 
     public Task<List<City>> GetCitiesByNameAsync(
@@ -42,34 +54,36 @@ public class CitiesRepository(ApplicationDbContext db) : ICitiesRepository
         CancellationToken cancellationToken = default
     )
     {
-        return _db
-            .Cities.Where(c => c.Name.Contains(name))
-            .ToListAsync(cancellationToken)
-            .ContinueWith(task => task.Result, cancellationToken);
+        // get cities by name from the database
+        return _db.Cities.Where(c => c.Name.Contains(name)).ToListAsync(cancellationToken);
     }
 
     public Task<City?> GetCityByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        return _db
-            .Cities.FirstOrDefaultAsync(c => c.CityId == id, cancellationToken)
-            .ContinueWith(task => task.Result, cancellationToken);
+        // get city by id from the database
+        return _db.Cities.FirstOrDefaultAsync(c => c.CityId == id, cancellationToken);
     }
 
-    public async Task<City> UpdateCityAsync(
+    public async Task<City?> UpdateCityAsync(
         City city,
         CancellationToken cancellationToken = default
     )
     {
+        // check that the city exists in the database
         var existingCity =
-            await _db.Cities.FindAsync(
-                [city.CityId, cancellationToken],
-                cancellationToken: cancellationToken
-            ) ?? throw new KeyNotFoundException($"City with ID {city.CityId} not found.");
-        _db.Cities.Update(city);
-        bool rowsAffected = await _db.SaveChangesAsync(cancellationToken)
-            .ContinueWith(task => task.Result > 0, cancellationToken);
+            await _db
+                .Cities.AsNoTracking()
+                .FirstOrDefaultAsync(
+                    c => c.CityId == city.CityId,
+                    cancellationToken: cancellationToken
+                ) ?? throw new KeyNotFoundException($"City with ID {city.CityId} not found.");
 
-        if (!rowsAffected)
+        // update the city in the database and check that the city was updated successfully
+        _db.Cities.Update(city);
+        int rowsAffected = await _db.SaveChangesAsync(cancellationToken);
+
+        // if the city was not updated successfully, throw an exception
+        if (rowsAffected == 0)
         {
             throw new DbUpdateException("Failed to update the city in the database.");
         }

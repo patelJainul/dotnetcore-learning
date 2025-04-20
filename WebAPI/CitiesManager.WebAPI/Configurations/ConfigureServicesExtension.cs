@@ -19,9 +19,11 @@ public static class ConfigureServicesExtension
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
         );
         services.AddEndpointsApiExplorer();
-        services.AddScoped<ICitiesRepository, CitiesRepository>();
+        services.AddScoped<ICityRepository, CitiesRepository>();
         services.AddScoped<ICityAddServices, CityAddServices>();
         services.AddScoped<ICityGetServices, CitiesGetServices>();
+        services.AddScoped<ICityUpdateServices, CityUpdateServices>();
+        services.AddScoped<ICityDeleteServices, CityDeleteServices>();
 
         return services;
     }
