@@ -1,5 +1,5 @@
 using ContactsManager.Core.Domain.RepositoryContracts;
-using ContactsManager.Core.DTO;
+using ContactsManager.Core.DTO.Cities;
 using ContactsManager.Core.ServiceContracts.Cities;
 
 namespace ContactsManager.Core.Services.Cities;

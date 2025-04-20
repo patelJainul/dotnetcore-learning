@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using CitiesManager.Core.Domain.Entities;
 
-namespace ContactsManager.Core.DTO;
+namespace ContactsManager.Core.DTO.Cities;
 
 public class CityAddRequest
 {

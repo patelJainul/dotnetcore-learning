@@ -1,6 +1,6 @@
 using CitiesManager.Core.Domain.Entities;
 using ContactsManager.Core.Domain.RepositoryContracts;
-using ContactsManager.Core.DTO;
+using ContactsManager.Core.DTO.Cities;
 using ContactsManager.Core.Helpers;
 using ContactsManager.Core.ServiceContracts.Cities;
 

@@ -11,8 +11,23 @@ public class CitiesRepository(ApplicationDbContext db) : ICityRepository
 {
     private readonly ApplicationDbContext _db = db;
 
+    public async Task<City?> CityExistsAsync(
+        string name,
+        CancellationToken cancellationToken = default
+    )
+    {
+        // check if the city exists in the database
+        return await _db.Cities.FirstOrDefaultAsync(c => c.Name == name, cancellationToken);
+    }
+
     public async Task<City> AddCityAsync(City city, CancellationToken cancellationToken = default)
     {
+        var isExist = await CityExistsAsync(city.Name, cancellationToken);
+
+        if (isExist != null)
+        {
+            throw new DbUpdateException("City already exists.");
+        }
         // add city to the database
         _db.Cities.Add(city);
 
@@ -35,11 +50,14 @@ public class CitiesRepository(ApplicationDbContext db) : ICityRepository
     {
         // remove the city from the database
         _db.Cities.RemoveRange(_db.Cities.Where(c => c.CityId == id));
-
+        var isDeleted = (await _db.SaveChangesAsync(cancellationToken)) > 0;
         // save changes to the database
         return new JsonResponse<bool>
         {
-            Data = (await _db.SaveChangesAsync(cancellationToken)) > 0,
+            Data = isDeleted,
+            Message = isDeleted
+                ? "City deleted successfully."
+                : "Failed to delete the city or already deleted.",
         };
     }
 

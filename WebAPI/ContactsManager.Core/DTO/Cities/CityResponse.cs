@@ -1,8 +1,7 @@
 using CitiesManager.Core.Domain.Entities;
-using ContactsManager.Core.Enums;
 using ContactsManager.Core.Helpers;
 
-namespace ContactsManager.Core.DTO;
+namespace ContactsManager.Core.DTO.Cities;
 
 public class CityResponse
 {

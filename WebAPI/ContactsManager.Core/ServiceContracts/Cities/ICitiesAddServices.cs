@@ -1,5 +1,4 @@
-using ContactsManager.Core.DTO;
-using ContactsManager.Core.Helpers;
+using ContactsManager.Core.DTO.Cities;
 
 namespace ContactsManager.Core.ServiceContracts.Cities;
 
