@@ -1,0 +1,49 @@
+@model ProductsViewModel
+
+<div class="space-y-4">
+    @foreach (var product in Model.Products)
+    {
+        <div class="bg-white p-4 rounded shadow-md flex flex-col md:flex-row gap-4">
+            <div class="w-full md:w-1/5">
+                <!-- Image placeholder -->
+                <div class="bg-gray-200 w-full h-40 flex items-center justify-center rounded">
+                    <span class="text-gray-500">Product Image</span>
+                </div>
+            </div>
+
+            <!-- Product details  -->
+            <div class="flex-1">
+                <h3 class="font-semibold text-lg">@product.Name</h3>
+                <p class="text-green-600 font-semibold my-2">$@product.Price</p>
+
+                <p class="text-gray-600 my-2">
+                    @(product.Description)
+                </p>
+            </div>
+
+            <!-- buttons -->
+            <div class="flex flex-row md:flex-col justify-between items-end gap-2">
+                @* <a href="/Products/Details/@product.ProductId" class="text-blue-500 hover:underline">Details</a> *@
+                @{
+                    bool isInCart = Model.Cart?.CartVsProducts?.Any(cp => cp.Product?.ProductId == product.ProductId) ?? false;
+                }
+                @if (isInCart)
+                {
+                    <a href="/Cart" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
+                        Go to Cart
+                    </a>
+                }
+                else
+                {
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@product.ProductId" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            Add to Cart
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+</div>

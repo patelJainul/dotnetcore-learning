@@ -1,0 +1,184 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CitiesManager.WebAPI</name>
+    </assembly>
+    <members>
+        <member name="T:CitiesManager.WebAPI.ConfigureServicesExtension.ConfigureServicesExtension">
+            <summary>
+            The `ConfigureServicesExtension` class contains an extension method for configuring services in an ASP.NET Core
+            application.
+            It is used to set up the dependency injection container with various services required by the application.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.ConfigureServicesExtension.ConfigureServicesExtension.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            This extension method configures the services for the ASP.NET Core application.
+            It adds the necessary services
+            for controllers, database context, and various city-related services.
+            </summary>
+            <param name="services">
+            The `IServiceCollection` instance that is used to register services in the ASP.NET Core dependency
+            injection container.
+            </param>
+            <param name="configuration">
+            The `IConfiguration` instance that provides access to the application's configuration settings,
+            including connection strings and other
+            configuration values.
+            </param>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Controllers.v1.AccountController">
+            <summary>
+            The `AccountController` class is a controller that handles user account-related actions.
+            It provides endpoints for user registration, login, and other account management tasks.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.#ctor(Microsoft.AspNetCore.Identity.UserManager{ContactsManager.Core.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.SignInManager{ContactsManager.Core.Identity.ApplicationUser},Microsoft.AspNetCore.Identity.RoleManager{ContactsManager.Core.Identity.ApplicationRole},ContactsManager.Core.ServiceContracts.JWT.IAuthServices)">
+            <summary>
+            The `AccountController` class is a controller that handles user account-related actions.
+            It provides endpoints for user registration, login, and other account management tasks.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.Register(ContactsManager.Core.DTO.Users.RegisterDTO)">
+            <summary>
+            Registers a new user in the system.
+            This endpoint accepts a `RegisterDTO` object containing user information and creates a new user account.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.IsEmailAlreadyExist(System.String)">
+            <summary>
+            Checks if the provided email already exists in the system.
+            This endpoint is used to validate the uniqueness of the email during user registration.
+            </summary>
+            <param name="email">The email address to check for existence.</param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.Login(ContactsManager.Core.DTO.Users.LoginDTO)">
+            <summary>
+            Logs in a user to the system.
+            This endpoint accepts a `LoginDTO` object containing user credentials and attempts to authenticate the user.
+             </summary>
+             <param name="model">The login credentials.</param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.Logout">
+            <summary>
+            Logs out the currently authenticated user.
+            This endpoint terminates the user's session and clears authentication cookies.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.AccountController.GenerateNewToken(ContactsManager.Core.DTO.JWT.RefreshTokenDTO)">
+            <summary>
+            Generates a new token for the user using the provided refresh token.
+            This endpoint accepts a `RefreshTokenDTO` object containing the refresh token and generates a new access token.
+            </summary>
+            <param name="model">The refresh token information.</param>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Controllers.v1.CitiesController">
+            <summary>
+            Handles HTTP requests related to
+            cities, including retrieving, adding, updating, and deleting city information.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.#ctor(ContactsManager.Core.ServiceContracts.Cities.ICityGetServices,ContactsManager.Core.ServiceContracts.Cities.ICityAddServices,ContactsManager.Core.ServiceContracts.Cities.ICityDeleteServices,ContactsManager.Core.ServiceContracts.Cities.ICityUpdateServices)">
+            <summary>
+            Handles HTTP requests related to
+            cities, including retrieving, adding, updating, and deleting city information.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.GetAllCities">
+            <summary>
+            To retrieve all cities and return list of cities in a JSON response.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.GetCityById(System.Nullable{System.Guid},System.Threading.CancellationToken)">
+            <summary>
+            To retrieves a city by its ID and returns a JSON response with the city's details.
+            </summary>
+            <param name="cityId">
+            The `cityId` parameter is a `Guid` that represents the unique identifier of the city to be
+            retrieved.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.GetCityByName(System.String,System.Threading.CancellationToken)">
+            <summary>
+            To retrieves a city by its name and returns a JSON response with the city's details.
+            </summary>
+            <param name="cityName">
+            The `cityName` parameter is a string that represents the name of the city to be
+            retrieved.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.AddCity(ContactsManager.Core.DTO.Cities.CityAddRequest,System.Threading.CancellationToken)">
+            <summary>
+            To add a new city and returns a newly added city.
+            </summary>
+            <param name="cityAddRequest">
+            The `cityAddRequest` parameter is an object of type `CityAddRequest` that contains the
+            information needed to add a new city.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.UpdateCity(System.Nullable{System.Guid},ContactsManager.Core.DTO.Cities.CityUpdateRequest,System.Threading.CancellationToken)">
+            <summary>
+            To updates an existing city by its ID and returns a updated city.
+            </summary>
+            <param name="cityId">
+            The `cityId` parameter is a `Guid` that represents the unique identifier of the city to be
+            updated.
+            </param>
+            <param name="cityUpdateRequest">
+            The `cityUpdateRequest` parameter is an object of type `CityUpdateRequest` that contains the
+            information needed to update an existing city.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v1.CitiesController.DeleteCity(System.Nullable{System.Guid},System.Threading.CancellationToken)">
+            <summary>
+            To delete a city by its ID and returns a JSON response indicating success or failure.
+            </summary>
+            <param name="cityId">
+            The `cityId` parameter is a nullable `Guid` that represents the unique identifier of the city to be
+            deleted.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="T:CitiesManager.WebAPI.Controllers.v2.CitiesController">
+            <summary>
+            Handles HTTP requests related to
+            cities, including retrieving, adding, updating, and deleting city information.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v2.CitiesController.#ctor(ContactsManager.Core.ServiceContracts.Cities.ICityGetServices,ContactsManager.Core.ServiceContracts.Cities.ICityAddServices,ContactsManager.Core.ServiceContracts.Cities.ICityDeleteServices,ContactsManager.Core.ServiceContracts.Cities.ICityUpdateServices)">
+            <summary>
+            Handles HTTP requests related to
+            cities, including retrieving, adding, updating, and deleting city information.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v2.CitiesController.GetAllCities">
+            <summary>
+            To retrieve all cities and return list of cities in a JSON response.
+            </summary>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v2.CitiesController.GetCityById(System.Nullable{System.Guid},System.Threading.CancellationToken)">
+            <summary>
+            To retrieves a city by its ID and returns a JSON response with the city's details.
+            </summary>
+            <param name="cityId">
+            The `cityId` parameter is a `Guid` that represents the unique identifier of the city to be
+            retrieved.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+        <member name="M:CitiesManager.WebAPI.Controllers.v2.CitiesController.GetCityByName(System.String,System.Threading.CancellationToken)">
+            <summary>
+            To retrieves a city by its name and returns a JSON response with the city's details.
+            </summary>
+            <param name="cityName">
+            The `cityName` parameter is a string that represents the name of the city to be
+            retrieved.
+            </param>
+            <param name="cancellationToken"></param>
+        </member>
+    </members>
+</doc>

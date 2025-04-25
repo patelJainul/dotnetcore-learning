@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="h-screen flex flex-col bg-gray-100">
+    <header class="bg-white shadow-md">
+        <nav class="container mx-auto flex justify-between items-center p-4">
+            <div class="text-3xl font-extrabold text-blue-600">
+                <a href="/" class="hover:text-blue-700 transition duration-300">ECommerceCart</a>
+            </div>
+            <ul class="flex space-x-8">
+                <li>
+                    <a asp-action="Index" asp-controller="Products"
+                        class="text-gray-700 hover:text-blue-500 font-medium transition duration-300">
+                        Products
+                    </a>
+                </li>
+                @if (User.Identity?.IsAuthenticated == false)
+                {
+                    <li>
+                        <a asp-action="Login" asp-controller="Account"
+                            class="text-gray-700 hover:text-blue-500 font-medium transition duration-300">
+                            Login
+                        </a>
+                    </li>
+                    <li>
+                        <a asp-action="Register" asp-controller="Account"
+                            class="text-gray-700 hover:text-blue-500 font-medium transition duration-300">
+                            Sign Up
+                        </a>
+                    </li>
+                }
+                else
+                {
+
+                    <li>
+                        <span class="text-gray-700 hover:text-blue-500 font-medium transition duration-300">
+                            @User.Identity?.Name
+                        </span>
+                    </li>
+                    <li>
+                        <a asp-action="Logout" asp-controller="Account"
+                            class="text-gray-700 hover:text-blue-500 font-medium transition duration-300">
+                            Log Out
+                        </a>
+                    </li>
+                }
+                <li>
+                    <a asp-action="Index" asp-controller="Cart"
+                        class="text-gray-700 hover:text-blue-500 font-medium transition duration-300">
+                        Cart
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="flex-grow container mx-auto py-6">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            @RenderBody()
+        </div>
+    </main>
+    <footer class="bg-gray-800 text-white py-4">
+        <div class="container mx-auto text-center">
+            <p class="text-sm">&copy; @DateTime.Now.Year ECommerceCart. All rights reserved.</p>
+        </div>
+    </footer>
+    @RenderSection("Scripts", required: false)
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+@model ProductsViewModel
+
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+    @foreach (var product in Model.Products)
+    {
+        <div class="bg-white p-3 rounded shadow-sm hover:shadow-md transition-shadow">
+            <div class="mb-2">
+                <!-- Image placeholder -->
+                <div class="bg-gray-200 w-full h-24 flex items-center justify-center rounded">
+                    <span class="text-gray-500 text-xs">Product</span>
+                </div>
+            </div>
+
+            <!-- Product details  -->
+            <h3 class="font-medium text-sm truncate">@product.Name</h3>
+            <p class="text-green-600 font-semibold text-sm mt-1">$@product.Price</p>
+
+            <!-- buttons -->
+            <div class="mt-2 text-center">
+                @{
+                    bool isInCart = Model.Cart?.CartVsProducts?.Any(cp => cp.Product?.ProductId == product.ProductId) ?? false;
+                }
+                @if (isInCart)
+                {
+                    <a href="/Cart"
+                        class="block w-full bg-green-500 text-white text-xs px-2 py-1 rounded hover:bg-green-600 mb-1">
+                        Go to Cart
+                    </a>
+                }
+                else
+                {
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post" class="mb-1">
+                        <input type="hidden" name="productId" value="@product.ProductId" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="w-full bg-blue-500 text-white text-xs px-2 py-1 rounded hover:bg-blue-600">
+                            Add to Cart
+                        </button>
+                    </form>
+                }
+                @* <a href="/Products/Details/@product.ProductId"
+                    class="block text-blue-500 text-xs hover:underline">Details</a> *@
+            </div>
+        </div>
+    }
+</div>

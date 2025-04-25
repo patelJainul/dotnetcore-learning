@@ -1,0 +1,47 @@
+@model ProductsViewModel
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    @foreach (var product in Model.Products)
+    {
+        <div class="bg-white p-4 rounded shadow-md">
+            <div class="aspect-w-1 aspect-h-1 mb-3">
+                <!-- Image placeholder -->
+                <div class="bg-gray-200 w-full h-48 flex items-center justify-center rounded">
+                    <span class="text-gray-500">Product Image</span>
+                </div>
+            </div>
+
+            <!-- Product details  -->
+            <h3 class="font-semibold text-lg mb-1">@product.Name</h3>
+            <p class="text-green-600 font-semibold mb-2">$@product.Price</p>
+
+            <p class="text-gray-600 text-sm mb-3">
+                @(product.Description)
+            </p>
+
+            <!-- buttons -->
+            <div class="flex justify-between mt-2">
+                @* <a href="/Products/Details/@product.ProductId" class="text-blue-500 hover:underline">Details</a> *@
+                @{
+                    bool isInCart = Model.Cart?.CartVsProducts?.Any(cp => cp.Product?.ProductId == product.ProductId) ?? false;
+                }
+                @if (isInCart)
+                {
+                    <a href="/Cart" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">
+                        Go to Cart
+                    </a>
+                }
+                else
+                {
+                    <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                        <input type="hidden" name="productId" value="@product.ProductId" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">
+                            Add to Cart
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    }
+</div>

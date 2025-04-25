@@ -10,14 +10,15 @@
       "request": "launch",
       "preLaunchTask": "build",
       "program": "${workspaceFolder}/CitiesManager.WebAPI/bin/Debug/net8.0/CitiesManager.WebAPI.dll",
-      "launchSettingsProfile": "https",
       "args": [],
+      "launchSettingsProfile": "https",
       "cwd": "${workspaceFolder}/CitiesManager.WebAPI",
       "stopAtEntry": false,
       "serverReadyAction": {
         "action": "openExternally",
         "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
       },
+      "console": "internalConsole",
       "env": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },

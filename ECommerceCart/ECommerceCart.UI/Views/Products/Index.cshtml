@@ -1,0 +1,36 @@
+﻿@model ProductsViewModel;
+
+<div class="container mx-auto py-4">
+    <!-- Simple header -->
+    <h1 class="text-2xl font-bold mb-4">Products</h1>
+
+    <!-- View mode toggle only -->
+    <div class="flex flex-wrap gap-4 mb-4">
+        <form asp-action="ChangeView" asp-controller="Products" method="post" id="viewModeForm">
+            <select asp-for="ViewMode" class="px-3 py-2 border rounded" onchange="this.form.submit()">
+                <option value="Card" selected="@(Model.ViewMode == "Card")">Card</option>
+                <option value="List" selected="@(Model.ViewMode == "List")">List</option>
+                <option value="Grid" selected="@(Model.ViewMode == "Grid")">Grid</option>
+            </select>
+        </form>
+    </div>
+
+    <!-- Product count -->
+    <p class="text-gray-600 mb-4">Products: <span id="productCount">@Model.Products.Count</span></p>
+
+    <!-- Products container -->
+    <div id="productContainer">
+        @switch (Model.ViewMode)
+        {
+            case "List":
+                @await Html.PartialAsync("_ListView", Model)
+                break;
+            case "Grid":
+                @await Html.PartialAsync("_GridView", Model)
+                break;
+            default:
+                @await Html.PartialAsync("_CardView", Model)
+                break;
+        }
+    </div>
+</div>

@@ -1,0 +1,41 @@
+﻿@model ECommerceCart.Core.DTO.RegisterDTO
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="flex items-center justify-center ">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Create an Account</h2>
+        <form asp-action="Register" method="post" class="space-y-4">
+            <div>
+                <label for="PersonName" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input asp-for="PersonName"
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                <span asp-validation-for="PersonName" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label for="Email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input asp-for="Email" type="email"
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                <span asp-validation-for="Email" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label for="Password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input asp-for="Password" type="password"
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                <span asp-validation-for="Password" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <label for="ConfirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <input asp-for="ConfirmPassword" type="password"
+                    class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500" />
+                <span asp-validation-for="ConfirmPassword" class="text-red-500 text-sm"></span>
+            </div>
+            <div>
+                <button type="submit"
+                    class="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">Register</button>
+            </div>
+        </form>
+    </div>
+</div>

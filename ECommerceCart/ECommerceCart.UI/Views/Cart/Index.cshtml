@@ -1,0 +1,57 @@
+﻿@model CartResponse?
+
+<h2 class="text-2xl font-bold mb-4">Your Cart</h2>
+
+
+<table class="table-auto w-full border-collapse border border-gray-300">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border border-gray-300 px-4 py-2">Product Name</th>
+            <th class="border border-gray-300 px-4 py-2">Quantity</th>
+            <th class="border border-gray-300 px-4 py-2">Price</th>
+            <th class="border border-gray-300 px-4 py-2">Total</th>
+            <th class="border border-gray-300 px-4 py-2">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.CartVsProducts.Count > 0)
+        {
+            @foreach (var item in Model.CartVsProducts)
+            {
+                <tr class="odd:bg-white even:bg-gray-50">
+                    <td class="border border-gray-300 px-4 py-2">@item.Product?.Name</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <form asp-action="AddToCart" method="post" class="flex items-center">
+                            <input type="hidden" name="ProductId" value="@item.Product?.ProductId" />
+                            <input type="number" name="Quantity" value="@item.Quantity" min="1"
+                                class="w-16 border border-gray-300 rounded px-2 py-1" />
+                            <input type="hidden" name="returnUrl" value="/Cart/Index" min="1"
+                                class="w-16 border border-gray-300 rounded px-2 py-1" />
+                            <button type="submit"
+                                class="ml-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600">Update</button>
+                        </form>
+                    </td>
+                    <td class="border border-gray-300 px-4 py-2">@item.Product?.Price.ToString("C")</td>
+                    <td class="border border-gray-300 px-4 py-2">@((item.Quantity * item.Product?.Price)?.ToString("C"))</td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <form asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="ProductId" value="@item.Product?.ProductId" />
+                            <button type="submit"
+                                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="border border-gray-300 px-4 py-2 text-center">Your cart is empty.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div class="text-right mt-4">
+    <a asp-action="Checkout" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Proceed to
+        Checkout</a>
+</div>

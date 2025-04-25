@@ -1,17 +1,20 @@
 using CitiesManager.Core.Domain.Entities;
+using ContactsManager.Core.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CitiesManager.Infrastructure.DatabaseContext;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) { }
 
-    public DbSet<City> Cities { get; set; }
+    public virtual DbSet<City> Cities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder
             .Entity<City>()
             .ToTable("Cities", schema: "dbo")

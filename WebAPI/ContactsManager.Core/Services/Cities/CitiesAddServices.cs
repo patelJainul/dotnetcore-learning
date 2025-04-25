@@ -1,5 +1,6 @@
 using ContactsManager.Core.Domain.RepositoryContracts;
 using ContactsManager.Core.DTO.Cities;
+using ContactsManager.Core.Helpers;
 using ContactsManager.Core.ServiceContracts.Cities;
 
 namespace ContactsManager.Core.Services.Cities;
@@ -15,6 +16,7 @@ public class CityAddServices(ICityRepository citiesRepository) : ICityAddService
     {
         ArgumentNullException.ThrowIfNull(cityAddRequest, nameof(cityAddRequest));
         ArgumentException.ThrowIfNullOrEmpty(cityAddRequest.Name, nameof(cityAddRequest.Name));
+        ValidationHelper.ModelValidation(cityAddRequest);
 
         return (
             await _cityRepository.AddCityAsync(cityAddRequest.ToCity(), cancellationToken)
