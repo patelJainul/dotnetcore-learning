@@ -1,0 +1,23 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    },
+    {
+      "type": "dotnet",
+      "task": "watch ECommerceCartCrud.UI",
+      "file": "/Users/pateljainul/work/Learnings/dotnet/aspnetcore-practice/ECommerceCart/ECommerceCartCrud.UI/ECommerceCartCrud.UI.csproj",
+      "problemMatcher": [],
+      "label": "dotnet: watch ECommerceCartCrud.UI",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}
